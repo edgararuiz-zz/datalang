@@ -35,12 +35,21 @@ devtools::install_github("edgararuiz/datalang")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-## basic example code
+library(datalang)
+
+t <- translate_data(ggplot2::diamonds, system.file("specs/diamonds-es.yml", package = "datalang")) 
+
+head(t)
 ```
+
+```{r}
+create_rd(ggplot2::diamonds, system.file("specs/diamonds-es.yml", package = "datalang")) 
+```
+ 
 
 What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
+```{r cars, include = FALSE}
 summary(cars)
 ```
 
@@ -48,7 +57,7 @@ You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-da
 
 You can also embed plots, for example:
 
-```{r pressure, echo = FALSE}
+```{r, include = FALSE}
 plot(pressure)
 ```
 

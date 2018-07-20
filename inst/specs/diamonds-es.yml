@@ -1,0 +1,26 @@
+variables:
+  price:
+    trans: precio
+  carat:
+    trans: quilate
+  cut:
+    trans: corte
+    desc: Calidad del corte
+    values:
+      Good: Bueno
+      Very Good: Muy bueno
+      Fair: Regular
+  clarity:
+    desc: Que tan claro es el diamante
+    trans: claridad
+  depth:
+    trans: profundidad
+  table:
+    trans: tabla
+help:
+  name: diamantes
+  alias: diamantes
+  title: Precio de 50,000 diamantes
+  description: Un set que contiene los precios de casi 54,000 diamantes.
+  usage: diamantes
+  format: Un data.frame con 53,940 lineas y 10 variables

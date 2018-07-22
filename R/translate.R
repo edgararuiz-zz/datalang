@@ -7,6 +7,7 @@ translate_column <- function(column, from, to) {
     levels(cl) <- lv
   }
   cl[cl == from] <- to
+  names(cl) <- names(column)
   data.frame(cl)
 }
 
@@ -16,9 +17,11 @@ translate_data <- function(df = NULL, spec_path = NULL) {
   if (is.null(df)) stop("Please provide a data.frame")
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
 
-  spec <- yaml::read_yaml(spec_path)
+  spec <- read_yaml(spec_path)
   vars <- imap(spec$variables, ~{
-    col <- df[, .y]
+    field <- .y
+    if(field == "TRUE") field <- "y"
+    col <- df[, field]
     vals <- .x$values
     if (!is.null(vals)) {
       for (i in 1:length(vals)) {
@@ -30,6 +33,7 @@ translate_data <- function(df = NULL, spec_path = NULL) {
     col
   })
   bind_cols(vars)
+
 }
 
 #' @export
@@ -38,7 +42,7 @@ create_rd <- function(df = NULL, spec_path = NULL) {
   if (is.null(df)) stop("Please provide a data.frame")
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
 
-  spec <- yaml::read_yaml(spec_path)
+  spec <- read_yaml(spec_path)
 
   header <- list(
     "\\docType{data}",
@@ -51,8 +55,11 @@ create_rd <- function(df = NULL, spec_path = NULL) {
 
   items <- NULL
   items <- map_chr(
-    spec$variables,
-    ~ paste0("\\item{", .x["trans"], "}{", .x["desc"], "}")
+    spec$variables,~ {
+      variable <- .x["trans"]
+      if(variable == "TRUE") variable <- "y"
+      paste0("\\item{", variable , "}{", .x["desc"], "}")
+      }
     )
   names(items) <- NULL
 
@@ -84,7 +91,7 @@ translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", r
 
     spec_path <- file.path(spec_folder, .x)
 
-    spec <- yaml::read_yaml(spec_path)
+    spec <- read_yaml(spec_path)
 
     df <- parse_expr(spec$df$source)
     df <- eval(df)

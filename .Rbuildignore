@@ -1,3 +1,6 @@
 ^datalang\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
+^datalang$
+^man\diamantes.rd$
+^data\$

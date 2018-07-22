@@ -2,4 +2,9 @@
 
 export(create_rd)
 export(translate_data)
-importFrom(magrittr,"%>%")
+export(translate_folder)
+import(rlang)
+importFrom(dplyr,bind_cols)
+importFrom(purrr,imap)
+importFrom(purrr,map_chr)
+importFrom(purrr,walk)

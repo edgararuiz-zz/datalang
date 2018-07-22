@@ -1,3 +1,6 @@
+df:
+  source: ggplot2::diamonds
+  name: diamantes
 variables:
   price:
     trans: precio

@@ -1,8 +1,9 @@
 Package: datalang
 Version: 0.0.0.9000
-Title: What the Package Does (One Line, Title Case)
-Description: What the package does (one paragraph).
-Authors@R: person("First", "Last", , "first.last@example.com", c("aut", "cre"))
+Title: Translate data sets to other languages
+Description: Offers an easy way to translate the variable names and data inside data sets into another language.  The purpose it to make it easier for non-English speaking R users to take advantage of excercise data sets.
+Authors@R: 
+    person("Edgar", "Ruiz", , "edgararuiz@gmail.com", c("aut", "cre"))
 License: What license it uses
 Encoding: UTF-8
 LazyData: true

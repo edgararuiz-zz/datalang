@@ -29,7 +29,9 @@ translate_data <- function(df = NULL, spec_path = NULL) {
         col <- translate_column(col, val, vals[[i]])
       }
     }
-    names(col) <- .x["trans"]
+    variable <- .x["trans"]
+    if(variable == "TRUE") variable <- "y"
+    names(col) <- variable
     col
   })
   bind_cols(vars)

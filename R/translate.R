@@ -13,14 +13,13 @@ translate_column <- function(column, from, to) {
 
 #' @export
 translate_data <- function(df = NULL, spec_path = NULL) {
-
   if (is.null(df)) stop("Please provide a data.frame")
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
 
   spec <- read_yaml(spec_path)
   vars <- imap(spec$variables, ~{
     field <- .y
-    if(field == "TRUE") field <- "y"
+    if (field == "TRUE") field <- "y"
     col <- df[, field]
     vals <- .x$values
     if (!is.null(vals)) {
@@ -30,44 +29,43 @@ translate_data <- function(df = NULL, spec_path = NULL) {
       }
     }
     variable <- .x["trans"]
-    if(variable == "TRUE") variable <- "y"
+    if (variable == "TRUE") variable <- "y"
     names(col) <- variable
     col
   })
   vars <- bind_cols(vars)
-  if(is_tibble(df)) vars <- as_tibble(vars)
+  if (is_tibble(df)) vars <- as_tibble(vars)
   vars
 }
 
 #' @export
 create_rd <- function(df = NULL, spec_path = NULL) {
-
   if (is.null(df)) stop("Please provide a data.frame")
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
 
   spec <- read_yaml(spec_path)
 
   header <- list("\\docType{data}")
-  if(!is.null(spec$help$name))   header <- c(header,paste0("\\name{", spec$help$name,"}"))
-  if(!is.null(spec$help$alias))  header <- c(header,paste0("\\alias{", spec$help$alias,"}"))
-  if(!is.null(spec$help$title))  header <- c(header,paste0("\\title{", spec$help$title,"}"))
-  if(!is.null(spec$help$format)) header <- c(header,paste0("\\format{", spec$help$format,""))
+  if (!is.null(spec$help$name)) header <- c(header, paste0("\\name{", spec$help$name, "}"))
+  if (!is.null(spec$help$alias)) header <- c(header, paste0("\\alias{", spec$help$alias, "}"))
+  if (!is.null(spec$help$title)) header <- c(header, paste0("\\title{", spec$help$title, "}"))
+  if (!is.null(spec$help$format)) header <- c(header, paste0("\\format{", spec$help$format, ""))
   header <- c(header, "\\describe{")
 
   items <- NULL
   items <- map_chr(
-    spec$variables,~ {
+    spec$variables, ~{
       variable <- .x["trans"]
-      if(variable == "TRUE") variable <- "y"
-      paste0("\\item{", variable , "}{", .x["desc"], "}")
-      }
-    )
+      if (variable == "TRUE") variable <- "y"
+      paste0("\\item{", variable, "}{", .x["desc"], "}")
+    }
+  )
   names(items) <- NULL
 
   footer <- list("}}")
-  if(!is.null(spec$help$usage))       footer <- c(footer, paste0("\\usage{", spec$help$usage,"}"))
-  if(!is.null(spec$help$description)) footer <- c(footer, paste0("\\description{", spec$help$description,"}"))
-  if(!is.null(spec$help$source))      footer <- c(footer, paste0("\\source{", spec$help$source,"}"))
+  if (!is.null(spec$help$usage)) footer <- c(footer, paste0("\\usage{", spec$help$usage, "}"))
+  if (!is.null(spec$help$description)) footer <- c(footer, paste0("\\description{", spec$help$description, "}"))
+  if (!is.null(spec$help$source)) footer <- c(footer, paste0("\\source{", spec$help$source, "}"))
   footer <- c(footer, "\\keyword{datasets}")
 
 
@@ -85,12 +83,10 @@ save_translation <- function(df, spec, name, data_folder) {
 }
 
 #' @export
-translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", rd_folder = "man"){
-
+translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", rd_folder = "man") {
   specs <- list.files(spec_folder, pattern = "yml")
 
   walk(specs, ~{
-
     spec_path <- file.path(spec_folder, .x)
 
     spec <- read_yaml(spec_path)
@@ -100,24 +96,20 @@ translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", r
 
     name <- parse_expr(spec$df$name)
 
-    if(!is.null(data_folder)){
+    if (!is.null(data_folder)) {
       save_translation(
-        df =   df,
+        df = df,
         spec = spec_path,
         name = !!name,
         data_folder = data_folder
       )
     }
 
-    if(!is.null(rd_folder)){
-      if(!is.null(spec$help)){
+    if (!is.null(rd_folder)) {
+      if (!is.null(spec$help)) {
         rd <- create_rd(df, spec_path)
         writeLines(rd, con = file.path(rd_folder, paste0(spec$df$name, ".rd")), useBytes = TRUE)
-
       }
     }
-    }
-  )
+  })
 }
-
-

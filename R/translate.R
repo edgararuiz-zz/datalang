@@ -113,7 +113,7 @@ translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", r
     if(!is.null(rd_folder)){
       if(!is.null(spec$help)){
         rd <- create_rd(df, spec_path)
-        writeLines(rd, con = file.path(rd_folder, paste0(spec$df$name, ".rd")))
+        writeLines(rd, con = file.path(rd_folder, paste0(spec$df$name, ".rd")), useBytes = TRUE)
 
       }
     }

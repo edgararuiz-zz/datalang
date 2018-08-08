@@ -34,8 +34,9 @@ translate_data <- function(df = NULL, spec_path = NULL) {
     names(col) <- variable
     col
   })
-  bind_cols(vars)
-
+  vars <- bind_cols(vars)
+  if(is_tibble(df)) vars <- as_tibble(vars)
+  vars
 }
 
 #' @export

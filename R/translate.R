@@ -47,14 +47,12 @@ create_rd <- function(df = NULL, spec_path = NULL) {
 
   spec <- read_yaml(spec_path)
 
-  header <- list(
-    "\\docType{data}",
-    if(!is.null(spec$help$name)) paste0("\\name{", spec$help$name,"}"),
-    if(!is.null(spec$help$alias)) paste0("\\alias{", spec$help$alias,"}"),
-    if(!is.null(spec$help$title)) paste0("\\title{", spec$help$title,"}"),
-    if(!is.null(spec$help$format)) paste0("\\format{", spec$help$format),
-    "\\describe{"
-  )
+  header <- list("\\docType{data}")
+  if(!is.null(spec$help$name))   header <- c(header,paste0("\\name{", spec$help$name,"}"))
+  if(!is.null(spec$help$alias))  header <- c(header,paste0("\\alias{", spec$help$alias,"}"))
+  if(!is.null(spec$help$title))  header <- c(header,paste0("\\title{", spec$help$title,"}"))
+  if(!is.null(spec$help$format)) header <- c(header,paste0("\\format{", spec$help$format,""))
+  header <- c(header, "\\describe{")
 
   items <- NULL
   items <- map_chr(
@@ -66,12 +64,13 @@ create_rd <- function(df = NULL, spec_path = NULL) {
     )
   names(items) <- NULL
 
-  footer <- list(
-    "}}",
-    if(!is.null(spec$help$usage)) paste0("\\usage{", spec$help$usage,"}"),
-    if(!is.null(spec$help$description)) paste0("\\description{", spec$help$description,"}"),
-    "\\keyword{datasets}"
-  )
+  footer <- list("}}")
+  if(!is.null(spec$help$usage))       footer <- c(footer, paste0("\\usage{", spec$help$usage,"}"))
+  if(!is.null(spec$help$description)) footer <- c(footer, paste0("\\description{", spec$help$description,"}"))
+  if(!is.null(spec$help$source))      footer <- c(footer, paste0("\\source{", spec$help$source,"}"))
+  footer <- c(footer, "\\keyword{datasets}")
+
+
   rd <- c(header, items, footer)
   as.character(rd)
 }

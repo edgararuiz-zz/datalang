@@ -30,6 +30,7 @@ translate_data <- function(df = NULL, spec_path = NULL) {
     }
     variable <- .x["trans"]
     if (variable == "TRUE") variable <- "y"
+    col <- as.data.frame(col)
     names(col) <- variable
     col
   })
@@ -63,9 +64,15 @@ create_rd <- function(df = NULL, spec_path = NULL) {
   names(items) <- NULL
 
   footer <- list("}}")
-  if (!is.null(spec$help$usage)) footer <- c(footer, paste0("\\usage{", spec$help$usage, "}"))
-  if (!is.null(spec$help$description)) footer <- c(footer, paste0("\\description{", spec$help$description, "}"))
-  if (!is.null(spec$help$source)) footer <- c(footer, paste0("\\source{", spec$help$source, "}"))
+  if (!is.null(spec$help$usage)) {
+    footer <- c(footer, paste0("\\usage{", spec$help$usage, "}"))
+  }
+  if (!is.null(spec$help$description)) {
+    footer <- c(footer, paste0("\\description{", spec$help$description, "}"))
+  }
+  if (!is.null(spec$help$source)) {
+    footer <- c(footer, paste0("\\source{", spec$help$source, "}"))
+  }
   footer <- c(footer, "\\keyword{datasets}")
 
 

@@ -16,7 +16,7 @@ translate_data <- function(spec_path = NULL, df = NULL) {
 
   spec <- read_yaml(spec_path)
 
-  if(is.null(df)){
+  if (is.null(df)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
   }
@@ -45,7 +45,6 @@ translate_data <- function(spec_path = NULL, df = NULL) {
 
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
-
   spec <- read_yaml(spec_path)
 
   df_name <- spec$df$name
@@ -56,7 +55,26 @@ save_translation <- function(spec_path, data_folder = "data") {
   save(
     list = df_name,
     file = paste0(data_folder, "/", df_name, ".rda")
-    )
+  )
+}
+
+#' @export
+load_translation <- function(spec_path) {
+  spec <- read_yaml(spec_path)
+  df <- translate_data(spec_path)
+  assign(
+    x = spec$df$name,
+    value = df,
+    envir = baseenv()
+  )
+}
+
+#' @export
+load_folder_data <- function(spec_folder = "inst/specs") {
+  specs <- list.files(spec_folder)
+  invisible({
+    lapply(file.path(spec_folder, specs), load_translation)
+  })
 }
 
 #' @export
@@ -74,5 +92,4 @@ translate_folder <- function(spec_folder = "inst/specs",
                              data_folder = "data", rd_folder = "man") {
   folder_data(spec_folder, data_folder)
   folder_rd(spec_folder, rd_folder)
-
 }

@@ -59,7 +59,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 }
 
 #' @export
-load_translation <- function(spec_path) {
+load_translation <- function(spec_path, ...) {
   spec <- read_yaml(spec_path)
   df <- translate_data(spec_path)
   assign(
@@ -70,10 +70,17 @@ load_translation <- function(spec_path) {
 }
 
 #' @export
-load_folder_data <- function(spec_folder = "inst/specs") {
-  specs <- list.files(spec_folder)
+load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, ...) {
+  specs <- file.path(spec_folder, list.files(spec_folder))
+
   invisible({
-    lapply(file.path(spec_folder, specs), load_translation)
+    lapply(specs, function(x){
+      load_translation(x)
+      if(verbose){
+        spec <- read_yaml(x)
+        cat(spec$df$source, " - New dataset:", spec$df$name, "\n")
+      }
+    })
   })
 }
 

@@ -1,4 +1,3 @@
-
 translate_column <- function(column, from, to) {
   cl <- column[[1]]
   if ("factor" %in% class(cl)) {
@@ -12,11 +11,16 @@ translate_column <- function(column, from, to) {
 }
 
 #' @export
-translate_data <- function(df = NULL, spec_path = NULL) {
-  if (is.null(df)) stop("Please provide a data.frame")
+translate_data <- function(spec_path = NULL, df = NULL) {
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
 
   spec <- read_yaml(spec_path)
+
+  if (is.null(df)) {
+    df <- parse_expr(spec$df$source)
+    df <- eval(df)
+  }
+
   vars <- imap(spec$variables, ~{
     field <- .y
     if (field == "TRUE") field <- "y"
@@ -40,83 +44,81 @@ translate_data <- function(df = NULL, spec_path = NULL) {
 }
 
 #' @export
-create_rd <- function(df = NULL, spec_path = NULL) {
-  if (is.null(df)) stop("Please provide a data.frame")
-  if (is.null(spec_path)) stop("Please provide the path of a spec_path")
-
+save_translation <- function(spec_path, data_folder = "data") {
   spec <- read_yaml(spec_path)
 
-  header <- list("\\docType{data}")
-  if (!is.null(spec$help$name)) header <- c(header, paste0("\\name{", spec$help$name, "}"))
-  if (!is.null(spec$help$alias)) header <- c(header, paste0("\\alias{", spec$help$alias, "}"))
-  if (!is.null(spec$help$title)) header <- c(header, paste0("\\title{", spec$help$title, "}"))
-  if (!is.null(spec$help$format)) header <- c(header, paste0("\\format{", spec$help$format, ""))
-  header <- c(header, "\\describe{")
+  df_name <- spec$df$name
 
-  items <- NULL
-  items <- map_chr(
-    spec$variables, ~{
-      variable <- .x["trans"]
-      if (variable == "TRUE") variable <- "y"
-      paste0("\\item{", variable, "}{", .x["desc"], "}")
-    }
+  df <- translate_data(spec_path)
+
+  assign(df_name, df)
+  save(
+    list = df_name,
+    file = paste0(data_folder, "/", df_name, ".rda")
   )
-  names(items) <- NULL
-
-  footer <- list("}}")
-  if (!is.null(spec$help$usage)) {
-    footer <- c(footer, paste0("\\usage{", spec$help$usage, "}"))
-  }
-  if (!is.null(spec$help$description)) {
-    footer <- c(footer, paste0("\\description{", spec$help$description, "}"))
-  }
-  if (!is.null(spec$help$source)) {
-    footer <- c(footer, paste0("\\source{", spec$help$source, "}"))
-  }
-  footer <- c(footer, "\\keyword{datasets}")
-
-
-  rd <- c(header, items, footer)
-  as.character(rd)
 }
 
-save_translation <- function(df, spec, name, data_folder) {
-  name <- enexpr(name)
-  name_char <- as.character(name)
-  e <- global_env()
-  e[[name_char]] <- translate_data(df, spec)
-  save(list = name_char, file = paste0(data_folder, "/", name_char, ".rda"))
-  rm(list = name_char, envir = e)
+
+#' @export
+load_translation <- function(spec_path, envir = baseenv(), ...) {
+  spec <- read_yaml(spec_path)
+  df <- translate_data(spec_path)
+  assign(
+    x = spec$df$name,
+    value = df,
+    envir = envir
+  )
 }
 
 #' @export
-translate_folder <- function(spec_folder = "inst/specs", data_folder = "data", rd_folder = "man") {
-  specs <- list.files(spec_folder, pattern = "yml")
+load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, envir = baseenv(), ...) {
+  specs <- file.path(spec_folder, list.files(spec_folder))
 
-  walk(specs, ~{
-    spec_path <- file.path(spec_folder, .x)
+  invisible({
+    lapply(specs, function(x) {
+      load_translation(x, envir = envir)
+      if (verbose) {
+        spec <- read_yaml(x)
+        cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
+      }
+    })
+  })
+}
 
-    spec <- read_yaml(spec_path)
+#' @export
+load_package_translations <- function(spec_folder = "translations",
+                                      verbose = TRUE,
+                                      envir = baseenv(),
+                                      language = NULL) {
+  if (is.null(language)) language <- Sys.getenv("LANGUAGE")
 
-    df <- parse_expr(spec$df$source)
-    df <- eval(df)
-
-    name <- parse_expr(spec$df$name)
-
-    if (!is.null(data_folder)) {
-      save_translation(
-        df = df,
-        spec = spec_path,
-        name = !!name,
-        data_folder = data_folder
+  if (language != "") {
+    lang_folder <- file.path(spec_folder, language)
+    if (file.exists(lang_folder)) {
+      cat("Language setting detected:", language, "\n")
+      cat("  Loading available translated datasets \n")
+      load_folder_data(
+        lang_folder,
+        verbose = verbose,
+        envir = envir
       )
     }
+  }
+}
 
-    if (!is.null(rd_folder)) {
-      if (!is.null(spec$help)) {
-        rd <- create_rd(df, spec_path)
-        writeLines(rd, con = file.path(rd_folder, paste0(spec$df$name, ".rd")), useBytes = TRUE)
-      }
-    }
+#' @export
+folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
+  specs <- list.files(spec_folder)
+  invisible({
+    lapply(file.path(spec_folder, specs), function(x) {
+      save_translation(x, data_folder = data_folder)
+    })
   })
+}
+
+#' @export
+translate_folder <- function(spec_folder = "inst/specs",
+                             data_folder = "data", rd_folder = "man") {
+  folder_data(spec_folder, data_folder)
+  folder_rd(spec_folder, rd_folder)
 }

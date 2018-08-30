@@ -39,8 +39,7 @@ create_rd <- function(spec_path = NULL) {
 }
 
 #' @export
-save_rd <- function(spec_path = NULL, rd_folder = "man"){
-
+save_rd <- function(spec_path = NULL, rd_folder = "man") {
   spec <- read_yaml(spec_path)
   rd_name <- spec$df$name
 
@@ -62,10 +61,3 @@ folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
     })
   })
 }
-
-
-
-
-
-
-

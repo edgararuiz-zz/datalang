@@ -58,30 +58,52 @@ save_translation <- function(spec_path, data_folder = "data") {
   )
 }
 
+
 #' @export
-load_translation <- function(spec_path, ...) {
+load_translation <- function(spec_path, envir = baseenv(), ...) {
   spec <- read_yaml(spec_path)
   df <- translate_data(spec_path)
   assign(
     x = spec$df$name,
     value = df,
-    envir = baseenv()
+    envir = envir
   )
 }
 
 #' @export
-load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, ...) {
+load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, envir = baseenv(), ...) {
   specs <- file.path(spec_folder, list.files(spec_folder))
 
   invisible({
-    lapply(specs, function(x){
-      load_translation(x)
-      if(verbose){
+    lapply(specs, function(x) {
+      load_translation(x, envir = envir)
+      if (verbose) {
         spec <- read_yaml(x)
-        cat(spec$df$source, " - New dataset:", spec$df$name, "\n")
+        cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
       }
     })
   })
+}
+
+#' @export
+load_package_translations <- function(spec_folder = "translations",
+                                      verbose = TRUE,
+                                      envir = baseenv(),
+                                      language = NULL) {
+  if (is.null(language)) language <- Sys.getenv("LANGUAGE")
+
+  if (language != "") {
+    lang_folder <- file.path(spec_folder, language)
+    if (file.exists(lang_folder)) {
+      cat("Language setting detected:", language, "\n")
+      cat("  Loading available translated datasets \n")
+      load_folder_data(
+        lang_folder,
+        verbose = verbose,
+        envir = envir
+      )
+    }
+  }
 }
 
 #' @export

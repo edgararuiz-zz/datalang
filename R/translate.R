@@ -74,6 +74,11 @@ load_translation <- function(spec_path, envir = baseenv(), ...) {
     value = df,
     envir = envir
   )
+
+  datalang_help_add(
+    obj = spec$df$name,
+    spec_path = spec_path
+  )
 }
 
 #' @export

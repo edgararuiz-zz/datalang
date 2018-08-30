@@ -12,13 +12,14 @@ create_rd <- function(spec_path = NULL) {
   header <- c(header, "\\describe{")
 
   items <- NULL
-  items <- map_chr(
-    spec$variables, ~{
-      variable <- .x["trans"]
+  items <- lapply(
+    spec$variables, function(x){
+      variable <- x["trans"]
       if (variable == "TRUE") variable <- "y"
-      paste0("\\item{", variable, "}{", .x["desc"], "}")
+      paste0("\\item{", variable, "}{", x["desc"], "}")
     }
   )
+  items <- as.character(items)
   names(items) <- NULL
 
   footer <- list("}}")

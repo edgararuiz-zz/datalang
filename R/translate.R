@@ -11,11 +11,12 @@ translate_data <- function(spec_path = NULL, df = NULL) {
 
   vars <- spec$variables
   var_names <- names(vars)
-  if(sum(var_names == "TRUE") > 0){
-    if(vars[var_names == "TRUE"][[1]]$trans == "TRUE"){
-      vars[var_names == "TRUE"][[1]]$trans <- "y"
+  vars_TRUE <- var_names == "TRUE"
+  if(sum(vars_TRUE) > 0){
+    if(vars[vars_TRUE][[1]]$trans == "TRUE"){
+      vars[vars_TRUE][[1]]$trans <- "y"
     }
-    var_names[var_names == "TRUE"]  <- "y"
+    var_names[vars_TRUE]  <- "y"
   }
 
   dfl <- lapply(

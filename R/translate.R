@@ -1,15 +1,3 @@
-translate_column <- function(column, from, to) {
-  cl <- column[[1]]
-  if ("factor" %in% class(cl)) {
-    lv <- levels(cl)
-    lv[lv == from] <- to
-    levels(cl) <- lv
-  }
-  cl[cl == from] <- to
-  names(cl) <- names(column)
-  data.frame(cl)
-}
-
 #' @export
 translate_data <- function(spec_path = NULL, df = NULL) {
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")
@@ -21,26 +9,44 @@ translate_data <- function(spec_path = NULL, df = NULL) {
     df <- eval(df)
   }
 
-  vars <- imap(spec$variables, ~{
-    field <- .y
-    if (field == "TRUE") field <- "y"
-    col <- df[, field]
-    vals <- .x$values
-    if (!is.null(vals)) {
-      for (i in 1:length(vals)) {
-        val <- names(vals[i])
-        col <- translate_column(col, val, vals[[i]])
-      }
+  vars <- spec$variables
+  var_names <- names(vars)
+  if(sum(var_names == "TRUE") > 0){
+    if(vars[var_names == "TRUE"][[1]]$trans == "TRUE"){
+      vars[var_names == "TRUE"][[1]]$trans <- "y"
     }
-    variable <- .x["trans"]
-    if (variable == "TRUE") variable <- "y"
-    col <- as.data.frame(col)
-    names(col) <- variable
-    col
-  })
-  vars <- bind_cols(vars)
-  if (is_tibble(df)) vars <- as_tibble(vars)
-  vars
+    var_names[var_names == "TRUE"]  <- "y"
+  }
+
+  dfl <- lapply(
+    seq_along(vars),
+    function(x) {
+      cl <- df[, var_names[x]][[1]]
+      from <- names(vars[[x]]$values)
+      to <- as.character(vars[[x]]$values[from])
+
+      if (!is.null(from)) {
+        if ("factor" %in% class(cl)) {
+          lv <- levels(cl)
+          for (i in seq_along(from)) {
+            lv[lv == from[i]] <- to[i]
+          }
+          levels(cl) <- lv
+        } else {
+          for (i in seq_along(from)) {
+            cl[cl == from[i]] <- to[i]
+          }
+        }
+      }
+
+      cl <- as.data.frame(cl)
+      colnames(cl) <- var_names[x]
+      cl
+    }
+  )
+  dfl <- as.data.frame(dfl)
+  if (is_tibble(df)) dfl <- as_tibble(dfl)
+  dfl
 }
 
 #' @export
@@ -57,7 +63,6 @@ save_translation <- function(spec_path, data_folder = "data") {
     file = paste0(data_folder, "/", df_name, ".rda")
   )
 }
-
 
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), ...) {

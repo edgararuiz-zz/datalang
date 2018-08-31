@@ -1,4 +1,5 @@
 ---
+title: datalang
 output: github_document
 ---
 
@@ -12,33 +13,43 @@ knitr::opts_chunk$set(
 ```
 # datalang
 
-The goal of datalang is to translate data sets to other languages.
+The goal is to help people whose first, or preferred, language is not English.  This package aims to aid in translating data in packages, and help files.  This should lower the barrier of learning R, and data analysis in general.
+
+Even though this package can translate data on the fly, the primary way it should be used is within another R package.
+
+## How it works
+
+The `datalang` package uses a translation spec file in order to perform the translation.  The expected spec file format is YAML. `datalang` uses the YAML file to know which column names, and data values, to change.  The same YAML spec file can contain the information needed to produce a help file.
 
 ## Installation
 
-You can install the released version of datalang from [CRAN](https://CRAN.R-project.org) with:
-
-``` r
-install.packages("datalang")
-```
-
-And the development version from [GitHub](https://github.com/) with:
+The development version from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
 devtools::install_github("edgararuiz/datalang")
 ```
+
 ## Example
+
+```{r}
+my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+
+
+readLines(my_spec, encoding = "UTF-8")
+```
+
 
 ```{r example}
 library(datalang)
 
-t <- translate_data(system.file("specs/diamonds-es.yml", package = "datalang")) 
 
-head(t)
+diamantes <- translate_data(my_spec) 
+
+head(diamantes)
 ```
 
 ```{r}
-create_rd(ggplot2::diamonds, system.file("specs/diamonds-es.yml", package = "datalang")) 
+create_rd(my_spec) 
 ```
  

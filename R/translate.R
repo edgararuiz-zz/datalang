@@ -1,3 +1,16 @@
+#' Translates a data set
+#'
+#' @description
+#'
+#' This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
+#'
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left NULL.
+#' @param df A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' translate_data(my_spec)
 #' @export
 translate_data <- function(spec_path = NULL, df = NULL) {
   if (is.null(spec_path)) stop("Please provide the path of a spec_path")

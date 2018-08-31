@@ -33,7 +33,7 @@ devtools::install_github("edgararuiz/datalang")
 ```{r example}
 library(datalang)
 
-t <- translate_data(ggplot2::diamonds, system.file("specs/diamonds-es.yml", package = "datalang")) 
+t <- translate_data(system.file("specs/diamonds-es.yml", package = "datalang")) 
 
 head(t)
 ```

@@ -4,7 +4,7 @@
 \alias{translate_data}
 \title{Translates a data set}
 \usage{
-translate_data(spec_path = NULL, df = NULL)
+translate_data(spec_path, df = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left NULL.}

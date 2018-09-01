@@ -12,8 +12,8 @@
 #' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
 #' translate_data(my_spec)
 #' @export
-translate_data <- function(spec_path = NULL, df = NULL) {
-  if (is.null(spec_path)) stop("Please provide the path of a spec_path")
+translate_data <- function(spec_path, df = NULL) {
+  is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
@@ -38,7 +38,6 @@ translate_data <- function(spec_path = NULL, df = NULL) {
       cl <- df[, var_names[x]][[1]]
       from <- names(vars[[x]]$values)
       to <- as.character(vars[[x]]$values[from])
-
       if (!is.null(from)) {
         if ("factor" %in% class(cl)) {
           lv <- levels(cl)
@@ -65,6 +64,8 @@ translate_data <- function(spec_path = NULL, df = NULL) {
 
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
+  is.readable(spec_path)
+
   spec <- read_yaml(spec_path)
 
   df_name <- spec$df$name
@@ -80,6 +81,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), ...) {
+  is.readable(spec_path)
   spec <- read_yaml(spec_path)
   df <- translate_data(spec_path)
   assign(
@@ -96,6 +98,8 @@ load_translation <- function(spec_path, envir = baseenv(), ...) {
 
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, envir = baseenv(), ...) {
+  is.readable(spec_folder)
+
   specs <- file.path(spec_folder, list.files(spec_folder))
 
   invisible({
@@ -114,6 +118,9 @@ load_package_translations <- function(spec_folder = "translations",
                                       verbose = TRUE,
                                       envir = baseenv(),
                                       language = NULL) {
+  is.readable(spec_folder)
+
+
   if (is.null(language)) language <- Sys.getenv("LANGUAGE")
 
   if (language != "") {
@@ -132,6 +139,7 @@ load_package_translations <- function(spec_folder = "translations",
 
 #' @export
 folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
+  is.readable(spec_folder)
   specs <- list.files(spec_folder)
   invisible({
     lapply(file.path(spec_folder, specs), function(x) {

@@ -4,7 +4,7 @@
 #'
 #' This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
 #'
-#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left NULL.
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
 #' @param df A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.
 #'
 #' @examples
@@ -62,6 +62,22 @@ translate_data <- function(spec_path, df = NULL) {
   dfl
 }
 
+#' Translates and saves a data set
+#'
+#' @description
+#'
+#' Saves a translated version of the data set in 'rda' format.  It wraps the translate_data()
+#' function, and saves the output.
+#'
+#' This function is meant for packages that will ship with a copy of the translated data set.
+#'
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left NULL.
+#' @param data_folder The target folder location where the 'rda' file will be save to.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' save_translation(my_spec, tempdir())
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
   is.readable(spec_path)
@@ -79,6 +95,22 @@ save_translation <- function(spec_path, data_folder = "data") {
   )
 }
 
+#' Translates and loads a data set into an R environment
+#'
+#' @description
+#'
+#' Translates and loads the translation to a specified R environment.
+#'
+#' This function is meant for packages that will do not wish to ship a copy of the data set, and
+#' wish to execute the translation on the fly, preferably when the "host" package is attached.
+#'
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
+#' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' load_translation(my_spec)
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), ...) {
   is.readable(spec_path)
@@ -96,8 +128,27 @@ load_translation <- function(spec_path, envir = baseenv(), ...) {
   )
 }
 
+#' Translates and loads multiple a data sets into an R environment
+#'
+#' @description
+#'
+#' Cycles through all of the spec files inside a folder specified in the 'spec_folder' argument.
+#' The function translates and loads each new data set to a specified R environment.
+#'
+#' This function is meant for packages that will do not wish to ship a copy of the data set, and
+#' wish to execute the translation on the fly, preferably when the "host" package is attached.
+#'
+#' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
+#' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
+#' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec_folder <- system.file("specs", package = "datalang")
+#' load_folder_data(my_spec_folder)
 #' @export
-load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, envir = baseenv(), ...) {
+load_folder_data <- function(spec_folder = "inst/specs",
+                             verbose = FALSE, envir = baseenv(), ...) {
   is.readable(spec_folder)
 
   specs <- file.path(spec_folder, list.files(spec_folder))
@@ -113,6 +164,28 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE, envir 
   })
 }
 
+#' Translates and loads multiple a data sets into an R environment
+#'
+#' @description
+#'
+#' Cycles through all of the spec files inside a folder.  The default behaivor is if a language
+#' setting is detected ('Sys.getenv("LANGUAGE")'), it will look for a sub-folder that matches the
+#' setting inside the 'spec_folder' path.
+#'
+#' The function translates and loads each new data set to a specified R environment.
+#'
+#' This function is meant for packages that will do not wish to ship a copy of the data set, and
+#' wish to execute the translation on the fly, preferably when the "host" package is attached.
+#'
+#' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
+#' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
+#' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#' @param language Optional argument that allows the target language to be specified.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec_folder <- system.file("translations", package = "datalang")
+#' load_package_translations(my_spec_folder, language = "es")
 #' @export
 load_package_translations <- function(spec_folder = "translations",
                                       verbose = TRUE,

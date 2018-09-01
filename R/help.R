@@ -1,6 +1,7 @@
 #' @export
 create_html_help <- function(spec_path = NULL) {
-  if (is.null(spec_path)) stop("Please provide the path of a spec_path")
+
+  is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
@@ -35,6 +36,9 @@ datalang_help_current <- function() datalang_context$help
 
 #' @export
 datalang_help_add <- function(obj, spec_path, package = NULL){
+
+  is.readable(spec_path)
+
   old <- datalang_context$help
   item <- list(
     object = obj,

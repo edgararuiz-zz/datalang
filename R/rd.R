@@ -1,6 +1,6 @@
 #' @export
-create_rd <- function(spec_path = NULL) {
-  if (is.null(spec_path)) stop("Please provide the path of a spec_path")
+create_rd <- function(spec_path) {
+  is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
@@ -41,6 +41,10 @@ create_rd <- function(spec_path = NULL) {
 
 #' @export
 save_rd <- function(spec_path = NULL, rd_folder = "man") {
+
+  is.readable(spec_path)
+  is.readable(rd_folder)
+
   spec <- read_yaml(spec_path)
   rd_name <- spec$df$name
 
@@ -55,6 +59,10 @@ save_rd <- function(spec_path = NULL, rd_folder = "man") {
 
 #' @export
 folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
+
+  is.readable(spec_path)
+  is.readable(rd_folder)
+
   specs <- list.files(spec_folder)
   invisible({
     lapply(file.path(spec_folder, specs), function(x) {

@@ -210,6 +210,25 @@ load_package_translations <- function(spec_folder = "translations",
   }
 }
 
+#' Translates and saves multiple a data sets
+#'
+#' @description
+#'
+#' Cycles through all of the spec files inside a folder specified in the 'spec_folder' argument.
+#' The function translates and saves them to a specified folder.
+#'
+#' Saves a translated versions of the data set in 'rda' format.  It wraps the translate_data()
+#' function, and saves the output.
+#'
+#' This function is meant for packages that will ship with a copy of the translated data set.
+#'
+#' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
+#' @param data_folder The target folder location where the 'rda' file will be save to.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec_folder <- system.file("specs", package = "datalang")
+#' folder_data(my_spec_folder, tempdir())
 #' @export
 folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
   is.readable(spec_folder)
@@ -221,6 +240,26 @@ folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
   })
 }
 
+#' Translates and saves multiple a data sets
+#'
+#' @description
+#'
+#' Cycles through all of the spec files inside a folder specified in the 'spec_folder' argument.
+#' The function translates and saves them to a specified folder. It also creates and saves the
+#' help files.
+#'
+#' Saves a translated versions of the data set in 'rda' format.
+#'
+#' This function is meant for packages that will ship with a copy of the translated data set.
+#'
+#' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
+#' @param data_folder The target folder location where the 'rda' file will be saved to.
+#' @param rd_folder The target folder location where the help files will be saved to.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec_folder <- system.file("specs", package = "datalang")
+#' folder_data(my_spec_folder, tempdir())
 #' @export
 translate_folder <- function(spec_folder = "inst/specs",
                              data_folder = "data", rd_folder = "man") {

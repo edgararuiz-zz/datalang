@@ -1,6 +1,12 @@
 datalang
 ================
 
+[![Travis build
+status](https://travis-ci.org/edgararuiz/datalang.svg?branch=master)](https://travis-ci.org/edgararuiz/datalang)
+
+[![Coverage
+status](https://codecov.io/gh/edgararuiz/datalang/branch/master/graph/badge.svg)](https://codecov.io/github/edgararuiz/datalang?branch=master)
+
 # datalang
 
 The goal is to help people whose first, or preferred, language is not

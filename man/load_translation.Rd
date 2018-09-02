@@ -19,6 +19,6 @@ wish to execute the translation on the fly, preferably when the "host" package i
 }
 \examples{
 library(datalang)
-my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 load_translation(my_spec)
 }

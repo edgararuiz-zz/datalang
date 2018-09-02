@@ -13,3 +13,5 @@ Imports:
     purrr
 ByteCompile: true
 RoxygenNote: 6.0.1
+Suggests: 
+    testthat

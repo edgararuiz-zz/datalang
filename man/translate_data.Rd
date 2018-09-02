@@ -4,18 +4,18 @@
 \alias{translate_data}
 \title{Translates a data set}
 \usage{
-translate_data(spec_path, df = NULL)
+translate_data(spec_path, .data = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.}
 
-\item{df}{A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.}
+\item{.data}{A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.}
 }
 \description{
 This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
 }
 \examples{
 library(datalang)
-my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 translate_data(my_spec)
 }

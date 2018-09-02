@@ -33,7 +33,7 @@ devtools::install_github("edgararuiz/datalang")
 ## Example
 
 ```{r}
-my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 
 
 readLines(my_spec, encoding = "UTF-8")

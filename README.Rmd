@@ -11,6 +11,11 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 ```
+
+[![Travis build status](https://travis-ci.org/edgararuiz/datalang.svg?branch=master)](https://travis-ci.org/edgararuiz/datalang)
+
+[![Coverage status](https://codecov.io/gh/edgararuiz/datalang/branch/master/graph/badge.svg)](https://codecov.io/github/edgararuiz/datalang?branch=master)
+
 # datalang
 
 The goal is to help people whose first, or preferred, language is not English.  This package aims to aid in translating data in packages, and help files.  This should lower the barrier of learning R, and data analysis in general.

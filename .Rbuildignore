@@ -4,3 +4,5 @@
 ^datalang$
 ^man\diamantes.rd$
 ^data\$
+^\.travis\.yml$
+^codecov\.yml$

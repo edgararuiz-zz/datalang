@@ -19,6 +19,6 @@ This function is meant for packages that will ship with a copy of the translated
 }
 \examples{
 library(datalang)
-my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 save_translation(my_spec, tempdir())
 }

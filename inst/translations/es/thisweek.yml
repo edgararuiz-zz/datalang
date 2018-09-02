@@ -1,0 +1,22 @@
+df:
+  source: thisweek
+  name: esta_semana
+variables:
+  day:
+    trans: dia
+    desc: Dia de la semana
+    values:
+      friday: viernes
+      saturday: sábado
+      sunday: domingo
+  morning:
+    trans: manana
+    desc: Temperatura a las 10 AM
+  afternoon:
+    trans: tarde
+    desc: Temperatura a las 3 PM
+help:
+  name: esta_semana
+  alias: esta_semana
+  title: Un data set de ejemplo
+  description: Tres días de temperaturas tomadas en la mañana y la tarde

@@ -5,21 +5,30 @@
 #' This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
-#' @param df A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.
+#' @param .data A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.
 #'
 #' @examples
 #' library(datalang)
-#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' translate_data(my_spec)
 #' @export
-translate_data <- function(spec_path, df = NULL) {
+translate_data <- function(spec_path, .data = NULL) {
   is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
-  if (is.null(df)) {
+  if (is.null(.data)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
+  } else {
+    df <- .data
+  }
+
+  if(is_tibble(df)){
+    was_tibble <- TRUE
+  } else {
+    was_tibble <- FALSE
+    df <-as_tibble(df)
   }
 
   vars <- spec$variables
@@ -31,6 +40,8 @@ translate_data <- function(spec_path, df = NULL) {
     }
     var_names[vars_TRUE]  <- "y"
   }
+
+  new_names <- as.character(lapply(vars, function(x)x$trans))
 
   dfl <- lapply(
     seq_along(vars),
@@ -53,12 +64,12 @@ translate_data <- function(spec_path, df = NULL) {
       }
 
       cl <- as.data.frame(cl)
-      colnames(cl) <- var_names[x]
+      colnames(cl) <- new_names[x]
       cl
     }
   )
   dfl <- as.data.frame(dfl)
-  if (is_tibble(df)) dfl <- as_tibble(dfl)
+  if (was_tibble) dfl <- as_tibble(dfl)
   dfl
 }
 
@@ -76,7 +87,7 @@ translate_data <- function(spec_path, df = NULL) {
 #'
 #' @examples
 #' library(datalang)
-#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' save_translation(my_spec, tempdir())
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
@@ -109,7 +120,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 #'
 #' @examples
 #' library(datalang)
-#' my_spec <- system.file("specs/diamonds-es.yml", package = "datalang")
+#' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' load_translation(my_spec)
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), ...) {

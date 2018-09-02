@@ -60,7 +60,7 @@ save_rd <- function(spec_path = NULL, rd_folder = "man") {
 #' @export
 folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
 
-  is.readable(spec_path)
+  is.readable(spec_folder)
   is.readable(rd_folder)
 
   specs <- list.files(spec_folder)

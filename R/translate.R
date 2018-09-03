@@ -123,7 +123,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 #' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' load_translation(my_spec)
 #' @export
-load_translation <- function(spec_path, envir = baseenv(), ...) {
+load_translation <- function(spec_path, envir = baseenv()) {
   is.readable(spec_path)
   spec <- read_yaml(spec_path)
   df <- translate_data(spec_path)
@@ -159,7 +159,7 @@ load_translation <- function(spec_path, envir = baseenv(), ...) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs",
-                             verbose = FALSE, envir = baseenv(), ...) {
+                             verbose = FALSE, envir = baseenv()) {
   is.readable(spec_folder)
 
   specs <- file.path(spec_folder, list.files(spec_folder))

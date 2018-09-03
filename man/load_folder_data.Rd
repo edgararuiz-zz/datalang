@@ -5,7 +5,7 @@
 \title{Translates and loads multiple a data sets into an R environment}
 \usage{
 load_folder_data(spec_folder = "inst/specs", verbose = FALSE,
-  envir = baseenv(), ...)
+  envir = baseenv())
 }
 \arguments{
 \item{spec_folder}{The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.}

@@ -4,16 +4,16 @@ Title: Translate data sets to other languages
 Description: Offers an easy way to translate the variable names and data inside data sets into another language.  The purpose it to make it easier for non-English speaking R users to take advantage of excercise data sets.
 Authors@R: 
     person("Edgar", "Ruiz", , "edgararuiz@gmail.com", c("aut", "cre"))
-License: What license it uses
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:
     dplyr(>= 0.7),
     rlang(>= 0.2.0),
-    purrr,
     assertthat,
     tibble,
-    yaml
+    yaml,
+    rstudioapi
 ByteCompile: true
 RoxygenNote: 6.0.1
 Suggests: 

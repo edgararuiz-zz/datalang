@@ -1,3 +1,15 @@
+#' Creates R help entry
+#'
+#' @description
+#'
+#' It uses the YAML spec file to create a single help entry.  Its output is a text vector.
+#'
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
+#' create_rd(my_spec)
 #' @export
 create_rd <- function(spec_path) {
   is.readable(spec_path)
@@ -39,6 +51,21 @@ create_rd <- function(spec_path) {
   as.character(rd)
 }
 
+#' Creates and saved R help file
+#'
+#' @description
+#'
+#' Saves a the help output, from 'create_rd()', into an 'rd' file with the same name as the translated dataset.
+#'
+#' This function is meant for packages that will ship with a copy of the translated data set.
+#'
+#' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left NULL.
+#' @param rd_folder The target folder location where the 'rd' file will be save to. Defaults to 'man'.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
+#' save_rd(my_spec, tempdir())
 #' @export
 save_rd <- function(spec_path = NULL, rd_folder = "man") {
 
@@ -57,6 +84,24 @@ save_rd <- function(spec_path = NULL, rd_folder = "man") {
   )
 }
 
+#' Creates rd files for multiple data sets
+#'
+#' @description
+#'
+#' Cycles through all of the spec files inside a folder specified in the 'spec_folder' argument.
+#' The function translates and saves them to a specified folder.
+#'
+#' Saves the files to the folder specified in the 'rd_folder' argument.
+#'
+#' This function is meant for packages that will ship with a copy of the translated data set.
+#'
+#' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
+#' @param rd_folder The target folder location where the 'rd' file will be save to. Defaults to 'man'.
+#'
+#' @examples
+#' library(datalang)
+#' my_spec_folder <- system.file("specs", package = "datalang")
+#' folder_rd(my_spec_folder, tempdir())
 #' @export
 folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
 

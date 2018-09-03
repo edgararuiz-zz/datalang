@@ -10,7 +10,10 @@ LazyData: true
 Imports:
     dplyr(>= 0.7),
     rlang(>= 0.2.0),
-    purrr
+    purrr,
+    assertthat,
+    tibble,
+    yaml
 ByteCompile: true
 RoxygenNote: 6.0.1
 Suggests: 

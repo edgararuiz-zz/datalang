@@ -4,12 +4,14 @@
 \alias{load_translation}
 \title{Translates and loads a data set into an R environment}
 \usage{
-load_translation(spec_path, envir = baseenv())
+load_translation(spec_path, envir = baseenv(), package = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.}
 
 \item{envir}{The target environment where the translated data set will be loaded to. Defaults to the base R environment.}
+
+\item{package}{Name of the package as a character variable. It is used in the help tracker.}
 }
 \description{
 Translates and loads the translation to a specified R environment.

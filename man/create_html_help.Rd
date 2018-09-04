@@ -4,10 +4,12 @@
 \alias{create_html_help}
 \title{Creates html help}
 \usage{
-create_html_help(spec_path)
+create_html_help(spec_path, package = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.}
+
+\item{package}{Name of the package as a character variable. It is used in the help tracker.}
 }
 \description{
 It uses the YAML spec file to create a single help entry.  Its output is a text vector, with 'HTML' content.

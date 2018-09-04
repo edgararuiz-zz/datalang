@@ -5,20 +5,24 @@
 #' It uses the YAML spec file to create a single help entry.  Its output is a text vector, with 'HTML' content.
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
 #' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' create_html_help(my_spec)
 #' @export
-create_html_help <- function(spec_path) {
+create_html_help <- function(spec_path, package = NULL) {
 
   is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
+  help_name <- spec$help$name
+  if(!is.null(package)) help_name <- paste0(help_name, " {", package, "}")
+
   h <- paste0("<body style='font-family:arial;'>")
-  h <- c(h, paste0("<p>", spec$help$name ,"</p>"))
+  h <- c(h, paste0("<p>", help_name ,"</p>"))
   h <- c(h, paste0("<h3>", spec$help$title ,"</h3>"))
   h <- c(h, paste0("<p>", spec$help$description ,"</p>"))
 
@@ -28,7 +32,7 @@ create_html_help <- function(spec_path) {
     spec$variables, function(x){
       variable <- x["trans"]
       if (variable == "TRUE") variable <- "y"
-      paste0("<tr><td>", variable, "</td><td>", x["desc"], "</td></td>")
+      paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", x["desc"], "</td></tr>")
     }
   )
   items <- as.character(items)
@@ -68,9 +72,9 @@ datalang_help_add <- function(obj, spec_path, package = NULL){
     package = package
   )
   if(is.null(datalang_context$help)){
-    datalang_context$help <- item
+    datalang_context$help <- list(item)
   } else {
-    datalang_context$help <- list(datalang_context$help, item)
+    datalang_context$help <- c(datalang_context$help, list(item))
   }
   invisible(old)
 }
@@ -96,10 +100,16 @@ datalang_help <- function(topic){
 
   if(sum(found) > 0) {
     dh_topic <- dh[found][[1]]
-    ht <- datalang::create_html_help(dh_topic$spec_path)
+    ht <- create_html_help(dh_topic$spec_path, dh_topic$package)
     hs <- file.path(tempdir(), "help.html")
     writeLines(ht, hs)
-    rstudioapi::viewer(hs)
+
+    if (rstudioapi::hasFun("viewer")) {
+      rstudioapi::viewer(hs)
+    } else {
+      browseURL(hs)
+    }
+
   } else {
     if(class(expr_topic) != "character"){
       expr_topic <- as.character(expr_topic)

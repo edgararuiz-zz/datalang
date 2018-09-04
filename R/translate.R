@@ -118,13 +118,14 @@ save_translation <- function(spec_path, data_folder = "data") {
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
 #' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' load_translation(my_spec)
 #' @export
-load_translation <- function(spec_path, envir = baseenv()) {
+load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
   is.readable(spec_path)
   spec <- read_yaml(spec_path)
   df <- translate_data(spec_path)
@@ -136,7 +137,8 @@ load_translation <- function(spec_path, envir = baseenv()) {
 
   datalang_help_add(
     obj = spec$df$name,
-    spec_path = spec_path
+    spec_path = spec_path,
+    package = package
   )
 }
 
@@ -153,21 +155,26 @@ load_translation <- function(spec_path, envir = baseenv()) {
 #' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
 #' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
 #' my_spec_folder <- system.file("specs", package = "datalang")
 #' load_folder_data(my_spec_folder)
 #' @export
-load_folder_data <- function(spec_folder = "inst/specs",
-                             verbose = FALSE, envir = baseenv()) {
+load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
+                             envir = baseenv(), package = NULL
+                             ) {
   is.readable(spec_folder)
 
   specs <- file.path(spec_folder, list.files(spec_folder))
 
   invisible({
     lapply(specs, function(x) {
-      tr <- load_translation(x, envir = envir)
+      tr <- load_translation(x,
+                             envir = envir,
+                             package = package
+                             )
       if (verbose) {
         spec <- read_yaml(x)
         if(is.null(tr)){
@@ -199,6 +206,7 @@ load_folder_data <- function(spec_folder = "inst/specs",
 #' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
 #' @param language Optional argument that allows the target language to be specified.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
@@ -208,9 +216,9 @@ load_folder_data <- function(spec_folder = "inst/specs",
 load_package_translations <- function(spec_folder = "translations",
                                       verbose = TRUE,
                                       envir = baseenv(),
-                                      language = NULL) {
+                                      language = NULL,
+                                      package = NULL) {
   is.readable(spec_folder)
-
 
   if (is.null(language)) language <- Sys.getenv("LANGUAGE")
 
@@ -234,8 +242,10 @@ load_package_translations <- function(spec_folder = "translations",
       load_folder_data(
         lang_folder,
         verbose = verbose,
-        envir = envir
+        envir = envir,
+        package = package
       )
+
       create_help_function(
         name = msgs$help$name,
         message = msgs$help$message,
@@ -244,6 +254,22 @@ load_package_translations <- function(spec_folder = "translations",
         )
     }
   }
+}
+
+#' @inherit load_package_translations
+#' @export
+on_attach <- function(package = NULL,
+                      spec_folder = system.file("translations", package = package),
+                      envir = as.environment(paste0("package:", package)),
+                      language = NULL,
+                      verbose = TRUE
+                      ) {
+  load_package_translations(
+    spec_folder =  spec_folder,
+    envir = envir,
+    package = package,
+    language = language
+  )
 }
 
 #' Translates and saves multiple a data sets

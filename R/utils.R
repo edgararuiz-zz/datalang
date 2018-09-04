@@ -24,7 +24,7 @@ create_help_function <- function(name,
                                  ){
   f <- new_function(
     alist(... =),
-    quote(datalang_help(...))
+    quote(datalang::datalang_help(...))
   )
   f <- list(f)
   names(f) <- name

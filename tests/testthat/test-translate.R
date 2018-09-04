@@ -38,16 +38,15 @@ test_that("Translated data frame matches expectations", {
   )
 })
 
-
 test_that("Save works", {
   expect_silent(save_translation(my_spec, data_folder = tempdir()))
   expect_silent(load_translation(my_spec))
   expect_silent(load_folder_data(my_spec_path))
   expect_silent(folder_data(my_spec_path, data_folder = tempdir()))
   expect_output(
-    load_package_translations(my_translation, language = "es"),
+    on_attach("datalang", language = "es", envir = baseenv()),
     "El lenguaje asignado"
-    )
+  )
   expect_silent(translate_folder(
     my_spec_path,
     data_folder = tempdir(),

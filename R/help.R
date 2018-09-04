@@ -5,6 +5,7 @@
 #' It uses the YAML spec file to create a single help entry.  Its output is a text vector, with 'HTML' content.
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)

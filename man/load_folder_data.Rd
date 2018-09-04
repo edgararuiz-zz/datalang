@@ -13,6 +13,8 @@ load_folder_data(spec_folder = "inst/specs", verbose = FALSE,
 \item{verbose}{Prints to the console the name of the original data set, and the name of the new translated data set.}
 
 \item{envir}{The target environment where the translated data set will be loaded to. Defaults to the base R environment.}
+
+\item{package}{Name of the package as a character variable. It is used in the help tracker.}
 }
 \description{
 Cycles through all of the spec files inside a folder specified in the 'spec_folder' argument.

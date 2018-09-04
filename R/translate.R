@@ -118,6 +118,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
@@ -154,6 +155,7 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
 #' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
@@ -204,6 +206,7 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
 #' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
 #' @param language Optional argument that allows the target language to be specified.
+#' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @examples
 #' library(datalang)
@@ -253,6 +256,7 @@ load_package_translations <- function(spec_folder = "translations",
   }
 }
 
+#' @inherit load_package_translations
 #' @export
 on_attach <- function(package = NULL,
                       spec_folder = system.file("translations", package = package),

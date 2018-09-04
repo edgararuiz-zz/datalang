@@ -4,7 +4,7 @@
 \alias{create_html_help}
 \title{Creates html help}
 \usage{
-create_html_help(spec_path)
+create_html_help(spec_path, package = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.}

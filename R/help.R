@@ -18,8 +18,9 @@ create_html_help <- function(spec_path) {
   spec <- read_yaml(spec_path)
 
   h <- paste0("<body style='font-family:arial;'>")
-  h <- c(h, paste0("<h1>", spec$help$title ,"</h1>"))
-  h <- c(h, paste0("<h3>", spec$help$description ,"</h3>"))
+  h <- c(h, paste0("<p>", spec$help$name ,"</p>"))
+  h <- c(h, paste0("<h3>", spec$help$title ,"</h3>"))
+  h <- c(h, paste0("<p>", spec$help$description ,"</p>"))
 
   h <- c(h, paste0("<table>"))
   items <- NULL
@@ -67,7 +68,7 @@ datalang_help_add <- function(obj, spec_path, package = NULL){
     package = package
   )
   if(is.null(datalang_context$help)){
-    datalang_context$help <- list(item )
+    datalang_context$help <- item
   } else {
     datalang_context$help <- list(datalang_context$help, item)
   }
@@ -80,13 +81,13 @@ datalang_help_add <- function(obj, spec_path, package = NULL){
 #'
 #' Prevents unnecessary rd files to be shipped with the "host" package.  It builds and displays the data set
 #' help, but it does it in the RStudio Viewer pane, as oppossed to the Help pane.  If the requested topic does
-#' not match to thel help entries available via 'datalang', then 'view_help()' will forward the topic to
+#' not match to thel help entries available via 'datalang', then 'datalang_help()' will forward the topic to
 #' the regular 'help()' function.
 #'
 #' @param topic A quoted or unquoted name of the data set or function
 #'
 #' @export
-view_help <- function(topic){
+datalang_help <- function(topic){
   expr_topic <- enexpr(topic)
 
   dh <- datalang_help_current()
@@ -106,5 +107,6 @@ view_help <- function(topic){
     utils::help(topic = expr_topic)
   }
 }
+
 
 

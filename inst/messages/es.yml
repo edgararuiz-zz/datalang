@@ -1,0 +1,7 @@
+startup:
+  detected: El lenguaje asignado actualmente es español
+  datasets: Cargando datos y/o ayuda de los siguientes objetos
+help:
+  message: Una nueva función de ayuda fue cargada
+  name: ayuda
+  use: Utilize asi

@@ -20,7 +20,7 @@ translate_data <- function(spec_path, .data = NULL) {
   if (is.null(.data)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
-    if(class(df) == "function") return()
+    if("function" %in% class(df)) return()
   } else {
     df <- .data
   }

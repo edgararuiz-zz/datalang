@@ -10,5 +10,5 @@ thisweek2$day <- as.character(thisweek2$day)
 test_that("help stuff works",{
   expect_silent(create_html_help(my_spec))
   expect_silent(datalang_help_add("thisweek", my_spec))
-  #expect_silent(datalang_help("thisweek"))
+  expect_silent(datalang_help("thisweek"))
 })

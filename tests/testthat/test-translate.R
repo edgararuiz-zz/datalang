@@ -46,7 +46,7 @@ test_that("Save works", {
   expect_silent(folder_data(my_spec_path, data_folder = tempdir()))
   expect_output(
     load_package_translations(my_translation, language = "es"),
-    "Language setting"
+    "El lenguaje asignado"
     )
   expect_silent(translate_folder(
     my_spec_path,

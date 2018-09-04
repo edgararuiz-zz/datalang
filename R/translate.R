@@ -20,6 +20,7 @@ translate_data <- function(spec_path, .data = NULL) {
   if (is.null(.data)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
+    if(class(df) == "function") return()
   } else {
     df <- .data
   }
@@ -166,11 +167,17 @@ load_folder_data <- function(spec_folder = "inst/specs",
 
   invisible({
     lapply(specs, function(x) {
-      load_translation(x, envir = envir)
+      tr <- load_translation(x, envir = envir)
       if (verbose) {
         spec <- read_yaml(x)
-        cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
+        if(is.null(tr)){
+          cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
+        } else {
+          cat("    ", spec$df$source, "\n")
+        }
+
       }
+      tr
     })
   })
 }
@@ -210,13 +217,31 @@ load_package_translations <- function(spec_folder = "translations",
   if (language != "") {
     lang_folder <- file.path(spec_folder, language)
     if (file.exists(lang_folder)) {
-      cat("Language setting detected:", language, "\n")
-      cat("  Loading available translated datasets \n")
+
+      first_file <- list.files(lang_folder)[[1]]
+      first_file <- file.path(lang_folder, first_file)
+      first_file <- yaml::read_yaml(first_file)
+      first_file <- first_file$df$name
+
+
+      msgs <- get_messages(language)
+      cat(msgs$startup$detected, " \n")
+      cat(
+        " ",
+        msgs$startup$datasets,
+        ": \n"
+        )
       load_folder_data(
         lang_folder,
         verbose = verbose,
         envir = envir
       )
+      create_help_function(
+        name = msgs$help$name,
+        message = msgs$help$message,
+        usage = msgs$help$use,
+        example = first_file
+        )
     }
   }
 }

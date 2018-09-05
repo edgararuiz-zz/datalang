@@ -4,4 +4,4 @@ startup:
 help:
   message: Una nueva función de ayuda fue cargada
   name: ayuda
-  use: Utilize asi
+  use: Utilice asi

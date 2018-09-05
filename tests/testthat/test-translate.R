@@ -10,27 +10,27 @@ thisweek2$day <- as.character(thisweek2$day)
 test_that("Translated data frame matches expectations", {
   expect_equal(
     colnames(translate_data(my_spec)),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     colnames(translate_data(my_spec, .data = thisweek)),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     colnames(translate_data(my_spec, .data = thisweek)),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     colnames(translate_data(my_spec, .data = thisweek2)),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     colnames(translate_data(my_spec, .data = tibble::as_tibble(thisweek))),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     colnames(translate_data(my_spec, .data = thisweek)),
-    c("dia","manana","tarde")
+    c("dia","maniana","tarde")
   )
   expect_equal(
     as.character(thisweek[[1]]),

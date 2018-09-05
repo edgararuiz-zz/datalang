@@ -4,13 +4,13 @@ df:
 variables:
   day:
     trans: dia
-    desc: Dia de la semana
+    desc: Día de la semana
     values:
       friday: viernes
       saturday: sábado
       sunday: domingo
   morning:
-    trans: manana
+    trans: maniana
     desc: Temperatura a las 10 AM
   afternoon:
     trans: tarde
@@ -18,5 +18,5 @@ variables:
 help:
   name: esta_semana
   alias: esta_semana
-  title: Un data set de ejemplo
+  title: Un dataset de ejemplo
   description: Tres días de temperaturas tomadas en la mañana y la tarde

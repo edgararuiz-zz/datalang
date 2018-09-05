@@ -4,10 +4,10 @@ df:
 variables:
   spec_data:
     trans: spec_data
-    desc: El lugar donde se encuentra el archivo con la especificacion
+    desc: El lugar donde se encuentra el archivo con la especificación
 help:
   name: translate_data
   alias: translate_data
   title: Traduce datos de un lenguaje a otro
-  description: Esta es la funcion principal de 'datalang'. Usa un archivo YAML para saber como traducir un data set.
+  description: Esta es la función principal de 'datalang'. Usa un archivo YAML para saber como traducir un dataset.
 

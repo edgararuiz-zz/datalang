@@ -66,10 +66,10 @@ So a the data set can go from this:
 
 To this:
 
-    #>       dia manana tarde
-    #> 1 viernes     76    88
-    #> 2  sábado     71    85
-    #> 3 domingo     70    83
+    #>       dia maniana tarde
+    #> 1 viernes      76    88
+    #> 2  sábado      71    85
+    #> 3 domingo      70    83
 
 ## Basics
 
@@ -87,10 +87,10 @@ and outputs a new, translated, data set.
 
 ``` r
 translate_data(my_spec)
-#>       dia manana tarde
-#> 1 viernes     76    88
-#> 2  sábado     71    85
-#> 3 domingo     70    83
+#>       dia maniana tarde
+#> 1 viernes      76    88
+#> 2  sábado      71    85
+#> 3 domingo      70    83
 ```
 
 Not all of the spec’s entries were needed to translate the data. The

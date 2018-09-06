@@ -10,7 +10,7 @@ load_folder_data(spec_folder = "inst/specs", verbose = FALSE,
 \arguments{
 \item{spec_folder}{The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.}
 
-\item{verbose}{Prints to the console the name of the original data set, and the name of the new translated data set.}
+\item{verbose}{If TRUE, it returns a list object with specs that where processed}
 
 \item{envir}{The target environment where the translated data set will be loaded to. Defaults to the base R environment.}
 

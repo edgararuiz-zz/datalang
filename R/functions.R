@@ -1,46 +1,33 @@
 #' @export
-load_function <- function(spec_path, envir = baseenv()){
+load_function <- function(spec_path, envir = baseenv(), package = NULL){
 
-  is.readable(spec_path)
+  spec <- get_spec(spec_path = spec_path)
 
-  spec <- read_yaml(spec_path)
+  if(spec$type != "function") stop("Not a valid function spec")
 
-  if(is.null(spec$df$type)){
-    return()
-  } else {
-    if(spec$df$type != "function") return()
-    }
+  if(is.null(package)) package <- spec$package
 
-  a <- formals(
-    eval(
-      parse_expr(paste0(spec$df$package, "::", spec$df$source))
-      #parse_expr(spec$df$source)
-    )
-  )
+  fun_name <- spec$source
+  if(!is.null(package)) fun_name <- paste0(package, "::", fun_name)
 
-  trans <- lapply(names(a), function(x){
-    sp <-spec$variables[x]
-    t <- sp[[1]]["trans"]
-    if(as.character(t) == "NULL"){
-      x
-    } else {
-      t[[1]]
-    }
-  })
+  a <- formals(eval(parse_expr(fun_name)))
 
-  trans <- as.character(trans)
+  a_names <- as.character(lapply(spec$variables, function(x) x$name))
+  a_trans <- as.character(lapply(spec$variables, function(x) x$trans))
+
+  trans <- as.character(lapply(names(a), function(x) a_trans[x == a_names]))
+
   names(a) <- trans
 
-  b <- lapply(seq_along(spec$variables), function(x){
-    a <- names(spec$variables[x])
-    t <- spec$variables[x][[1]]$trans
-    if(is.null(t)) t <- a
-    paste0(a, " = ", t)
-  })
+  b <- lapply(
+    spec$variables,
+    function(x){
+      paste0(x$name, " = ", x$trans)
+    }
+  )
   b <- as.character(b)
   b <- paste0(b, collapse = ", ")
-  b <- paste0(spec$df$package, "::", spec$df$source, "(", b, ")")
-  #b <- paste0(spec$df$source, "(", b, ")")
+  b <- paste0(fun_name, "(", b, ")")
   b <- parse_expr(b)
 
   f <- new_function(
@@ -50,7 +37,7 @@ load_function <- function(spec_path, envir = baseenv()){
   )
 
   f <- list(f)
-  names(f) <- spec$df$name
+  names(f) <- spec$name
   env_bind(
     envir,
     !!! f
@@ -62,17 +49,29 @@ load_function <- function(spec_path, envir = baseenv()){
 load_folder_functions <- function(spec_folder = "inst/specs", verbose = FALSE,
                                   envir = baseenv(), package = NULL
 ) {
-  is.readable(spec_folder)
 
-  specs <- file.path(spec_folder, list.files(spec_folder))
+  specs <- get_specs_folder(
+    spec_folder = spec_folder,
+    filter_type = "function"
+  )
 
-  invisible({
-    lapply(specs, function(x) {
-      load_function(x, envir = envir)
-      if (verbose) {
-        spec <- read_yaml(x)
-        cat("    f -> ", spec$df$source, " >-> ", spec$df$name, "\n")
-      }
+  paths <- as.character(
+    lapply(
+      specs,
+      function(x)x$path
+    )
+  )
+
+  lapply(
+    paths,
+    function(x){
+      load_function(
+        spec_path = x,
+        envir = envir,
+        package = package
+      )
     })
-  })
+
+  if(verbose) specs
+
 }

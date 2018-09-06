@@ -1,5 +1,3 @@
-
-#' @export
 get_spec <- function(spec_path) {
   is.readable(spec_path)
 
@@ -12,11 +10,14 @@ get_spec <- function(spec_path) {
     function(x) {
       curr <- vars[x][[1]]
       name_curr <- names(vars[x])
-      list(
+      v <- list(
         name = name_curr,
         trans = ifelse(is.null(curr$trans), name_curr, curr$trans),
-        desc = ifelse(is.null(curr$desc), "", curr$desc)
+        desc = ifelse(is.null(curr$desc), "", curr$desc),
+        has_values = !is.null(curr$values)
       )
+      if(v$has_values) v$values <- curr$values
+      v
     }
   )
 
@@ -36,9 +37,18 @@ get_spec <- function(spec_path) {
   if (spec$has_help) spec$help <- yaml_file$help
 
   spec
+
+  # TODO- Fix y names
+  # vars_TRUE <- var_names == "TRUE"
+  # if(sum(vars_TRUE) > 0){
+  #   if(vars[vars_TRUE][[1]]$trans == "TRUE"){
+  #     vars[vars_TRUE][[1]]$trans <- "y"
+  #   }
+  #   var_names[vars_TRUE]  <- "y"
+  # }
+  #
 }
 
-#' @export
 get_specs_folder <- function(spec_folder, filter_type = "") {
   is.readable(spec_folder)
 

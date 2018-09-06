@@ -1,6 +1,8 @@
 startup:
   detected: Language setting detected
   datasets: Loading available translated datasets and/or help files
+  data: Datasets
+  functions: Functions
 help:
   message: New help function added
   name: view_help

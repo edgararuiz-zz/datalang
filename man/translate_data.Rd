@@ -12,7 +12,7 @@ translate_data(spec_path, .data = NULL)
 \item{.data}{A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.}
 }
 \description{
-This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
+It uses a YAML file as the spec to translate a data set.
 }
 \examples{
 library(datalang)

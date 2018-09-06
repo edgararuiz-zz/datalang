@@ -98,6 +98,10 @@ translate_data <- function(spec_path, .data = NULL) {
 save_translation <- function(spec_path, data_folder = "data") {
   is.readable(spec_path)
 
+  if(!is.null(spec$df$type)){
+    if(spec$df$type == "function") return()
+  }
+
   spec <- read_yaml(spec_path)
 
   df_name <- spec$df$name
@@ -131,7 +135,13 @@ save_translation <- function(spec_path, data_folder = "data") {
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
   is.readable(spec_path)
+
   spec <- read_yaml(spec_path)
+
+  if(!is.null(spec$df$type)){
+    if(spec$df$type == "function") return()
+  }
+
   df <- translate_data(spec_path)
   assign(
     x = spec$df$name,
@@ -144,6 +154,8 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
     spec_path = spec_path,
     package = package
   )
+
+  spec$df$name
 }
 
 #' Translates and loads multiple a data sets into an R environment
@@ -175,10 +187,8 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
 
   invisible({
     lapply(specs, function(x) {
-      tr <- load_translation(x,
-                             envir = envir,
-                             package = package
-                             )
+      tr <- load_translation(x,envir = envir,
+                             package = package)
       if (verbose) {
         spec <- read_yaml(x)
         if(is.null(tr)){

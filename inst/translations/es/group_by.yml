@@ -1,8 +1,7 @@
-df:
-  type: function
-  source: group_by
-  package: dplyr
-  name: agrupar
+type: function
+source: group_by
+package: dplyr
+name: agrupar
 variables:
   ".data":
     desc: Un a table tipo tbl()

@@ -17,6 +17,10 @@ translate_data <- function(spec_path, .data = NULL) {
 
   spec <- read_yaml(spec_path)
 
+  if(!is.null(spec$df$type)){
+    if(spec$df$type == "function") return()
+  }
+
   if (is.null(.data)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
@@ -244,6 +248,10 @@ load_package_translations <- function(spec_folder = "translations",
         verbose = verbose,
         envir = envir,
         package = package
+      )
+
+      load_folder_functions(
+        lang_folder
       )
 
       create_help_function(

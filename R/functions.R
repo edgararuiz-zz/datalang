@@ -71,7 +71,7 @@ load_folder_functions <- function(spec_folder = "inst/specs", verbose = FALSE,
       load_function(x, envir = envir)
       if (verbose) {
         spec <- read_yaml(x)
-        cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
+        cat("    f -> ", spec$df$source, " >-> ", spec$df$name, "\n")
       }
     })
   })

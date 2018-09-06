@@ -251,7 +251,9 @@ load_package_translations <- function(spec_folder = "translations",
       )
 
       load_folder_functions(
-        lang_folder
+        lang_folder,
+        envir = envir,
+        verbose = verbose
       )
 
       create_help_function(

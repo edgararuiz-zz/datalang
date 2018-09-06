@@ -29,10 +29,13 @@ create_html_help <- function(spec_path, package = NULL) {
   h <- c(h, paste0("<table>"))
   items <- NULL
   items <- lapply(
-    spec$variables, function(x){
-      variable <- x["trans"]
+    seq_along(spec$variables),
+    function(x){
+      variable <- spec$variables[[x]]["trans"]
+      description <- spec$variables[[x]]["desc"]
       if (variable == "TRUE") variable <- "y"
-      paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", x["desc"], "</td></tr>")
+      if (variable == "NULL") variable <- names(spec$variables[x])
+      paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", description , "</td></tr>")
     }
   )
   items <- as.character(items)

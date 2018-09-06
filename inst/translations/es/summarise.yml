@@ -1,0 +1,15 @@
+df:
+  type: function
+  source: summarise
+  package: dplyr
+  name: resumir
+variables:
+  ".data":
+    desc: Un a table tipo tbl()
+  "...":
+    desc: "Nombre the los valores en pares para resumir"
+help:
+  name: resumir
+  title: Reduce valores multiples a un valor
+  description: Usualmente se usa con 'group_by()`. El resultado sera una linea por cada grupo.
+

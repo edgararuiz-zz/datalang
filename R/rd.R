@@ -12,10 +12,9 @@
 #' create_rd(my_spec)
 #' @export
 create_rd <- function(spec_path) {
-
   spec <- get_spec(spec_path = spec_path)
 
-  header <- list(paste0("\\docType{", spec$type,"}"))
+  header <- list(paste0("\\docType{", spec$type, "}"))
   if (!is.null(spec$help$name)) header <- c(header, paste0("\\name{", spec$help$name, "}"))
   if (!is.null(spec$help$alias)) header <- c(header, paste0("\\alias{", spec$help$alias, "}"))
   if (!is.null(spec$help$title)) header <- c(header, paste0("\\title{", spec$help$title, "}"))
@@ -24,7 +23,7 @@ create_rd <- function(spec_path) {
 
   items <- NULL
   items <- lapply(
-    spec$variables, function(x){
+    spec$variables, function(x) {
       variable <- x["trans"]
       if (variable == "TRUE") variable <- "y"
       paste0("\\item{", variable, "}{", x["desc"], "}")
@@ -67,18 +66,15 @@ create_rd <- function(spec_path) {
 #' save_rd(my_spec, tempdir())
 #' @export
 save_rd <- function(spec_path = NULL, rd_folder = "man") {
-
   is.readable(rd_folder)
 
   spec <- get_spec(spec_path = spec_path)
-
-  rd_name <- spec$name
 
   rd <- create_rd(spec_path)
 
   writeLines(
     rd,
-    con = file.path(rd_folder, paste0(rd_name, ".rd")),
+    con = file.path(rd_folder, paste0(spec$name, ".rd")),
     useBytes = TRUE
   )
 }
@@ -103,20 +99,11 @@ save_rd <- function(spec_path = NULL, rd_folder = "man") {
 #' folder_rd(my_spec_folder, tempdir())
 #' @export
 folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
-
-  is.readable(rd_folder)
-
   specs <- get_specs_folder(spec_folder = spec_folder)
 
-  paths <- as.character(
-    lapply(
-      specs,
-      function(x)x$path
-    )
-  )
+  paths <- get_item(specs, "path")
 
   invisible(
     lapply(paths, function(x) save_rd(x, rd_folder = rd_folder))
   )
-
 }

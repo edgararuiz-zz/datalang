@@ -15,7 +15,7 @@
 translate_data <- function(spec_path, .data = NULL) {
   spec <- get_spec(spec_path)
 
-  if(spec$type != "dataset") stop("Not a valid data set spec")
+  if (spec$type != "dataset") stop("Not a valid data set spec")
 
   if (is.null(.data)) {
     df <- parse_expr(spec$source)
@@ -25,7 +25,7 @@ translate_data <- function(spec_path, .data = NULL) {
   }
 
   was_tibble <- is_tibble(df)
-  df <-as_tibble(df)
+  df <- as_tibble(df)
 
   vars <- spec$variables
 
@@ -78,7 +78,6 @@ translate_data <- function(spec_path, .data = NULL) {
 #' save_translation(my_spec, tempdir())
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
-
   spec <- get_spec(spec_path = spec_path)
 
   df_name <- spec$name
@@ -111,7 +110,6 @@ save_translation <- function(spec_path, data_folder = "data") {
 #' load_translation(my_spec)
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
-
   spec <- get_spec(spec_path = spec_path)
 
   df <- translate_data(spec_path = spec_path)
@@ -150,9 +148,7 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
-                             envir = baseenv(), package = NULL
-                             ) {
-
+                             envir = baseenv(), package = NULL) {
   specs <- get_specs_folder(
     spec_folder = spec_folder,
     filter_type = "dataset"
@@ -161,24 +157,24 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
   paths <- as.character(
     lapply(
       specs,
-      function(x)x$path
-      )
+      function(x) x$path
     )
+  )
 
   invisible(
     lapply(
       paths,
-      function(x){
+      function(x) {
         load_translation(
           spec_path = x,
           envir = envir,
           package = package
         )
-      })
+      }
+    )
   )
 
-  if(verbose) specs
-
+  if (verbose) specs
 }
 
 #' Translates and loads multiple a data sets into an R environment
@@ -210,27 +206,26 @@ load_package_translations <- function(spec_folder = "translations",
                                       envir = baseenv(),
                                       language = NULL,
                                       package = NULL) {
-
   if (is.null(language)) language <- Sys.getenv("LANGUAGE")
 
   if (language != "") {
     lang_folder <- file.path(spec_folder, language)
     if (file.exists(lang_folder)) {
-
-
       specs <- get_specs_folder(
         spec_folder = lang_folder
       )
 
-      types <- as.character(lapply(specs, function(x)x$type))
+      max_source <- max(as.integer(lapply(specs, function(x) nchar(x$source))))
+      max_source <- max_source + 2
 
+      types <- as.character(lapply(specs, function(x) x$type))
 
       msgs <- get_messages(language)
       startup <- NULL
       startup <- c(startup, paste0(msgs$startup$detected))
       startup <- c(startup, paste0(msgs$startup$datasets, ":"))
 
-      if(any(types == "dataset")){
+      if (any(types == "dataset")) {
         load_folder_data(
           lang_folder,
           verbose = verbose,
@@ -242,15 +237,15 @@ load_package_translations <- function(spec_folder = "translations",
           lapply(
             items,
             function(x) {
-              ifelse(x$source == x$name, x$name, paste0(x$source, " >-> ", x$name))
-              }
-            )
+              ifelse(x$source == x$name, x$name, paste0(pad_str(x$source, max_source, "-"), "> ", x$name))
+            }
           )
+        )
         startup <- c(startup, paste0(" ", msgs$startup$data))
         startup <- c(startup, paste0("  ", m))
       }
 
-      if(any(types == "function")){
+      if (any(types == "function")) {
         load_folder_functions(
           lang_folder,
           envir = envir,
@@ -261,7 +256,7 @@ load_package_translations <- function(spec_folder = "translations",
           lapply(
             items,
             function(x) {
-              ifelse(x$source == x$name, x$name, paste0(x$source, " >-> ", x$name))
+              ifelse(x$source == x$name, x$name, paste0(pad_str(x$source, max_source, "-"), "> ", x$name))
             }
           )
         )
@@ -269,14 +264,13 @@ load_package_translations <- function(spec_folder = "translations",
         startup <- c(startup, paste0("  ", m))
       }
 
-      # create_help_function(
-      #   name = msgs$help$name,
-      #   message = msgs$help$message,
-      #   usage = msgs$help$use,
-      #   example = specs[[1]]$name
-      #   )
+      create_help_function(name = msgs$help$name)
+      startup <- c(startup, paste0(msgs$help$message, ": ", msgs$help$name, "()"))
+      startup <- c(startup, paste0(msgs$help$use, ": ", msgs$help$name, "(", specs[[1]]$name, ")"))
+
+
       startup <- paste0(startup, collapse = "\n")
-      if(verbose) cat(startup)
+      if (verbose) cat(startup)
     }
   }
 }
@@ -287,10 +281,9 @@ on_attach <- function(package = NULL,
                       spec_folder = system.file("translations", package = package),
                       envir = as.environment(paste0("package:", package)),
                       language = NULL,
-                      verbose = TRUE
-                      ) {
+                      verbose = TRUE) {
   load_package_translations(
-    spec_folder =  spec_folder,
+    spec_folder = spec_folder,
     envir = envir,
     package = package,
     language = language
@@ -318,7 +311,6 @@ on_attach <- function(package = NULL,
 #' folder_data(my_spec_folder, tempdir())
 #' @export
 folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
-
   specs <- get_specs_folder(
     spec_folder = spec_folder,
     filter_type = "dataset"
@@ -327,7 +319,7 @@ folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
   paths <- as.character(
     lapply(
       specs,
-      function(x)x$path
+      function(x) x$path
     )
   )
 
@@ -335,8 +327,8 @@ folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
     paths,
     function(x) {
       save_translation(spec_path = x, data_folder = data_folder)
-      }
-    )
+    }
+  )
 }
 
 #' Translates and saves multiple a data sets
@@ -365,4 +357,3 @@ translate_folder <- function(spec_folder = "inst/specs",
   folder_data(spec_folder, data_folder)
   folder_rd(spec_folder, rd_folder)
 }
-

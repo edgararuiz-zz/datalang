@@ -16,7 +16,7 @@ get_spec <- function(spec_path) {
         desc = ifelse(is.null(curr$desc), "", curr$desc),
         has_values = !is.null(curr$values)
       )
-      if(v$has_values) v$values <- curr$values
+      if (v$has_values) v$values <- curr$values
       v
     }
   )

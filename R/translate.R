@@ -2,7 +2,7 @@
 #'
 #' @description
 #'
-#' This is the main translation function in 'datalang'.  It uses a YAML file as the spec to translate a data set.
+#' It uses a YAML file as the spec to translate a data set.
 #'
 #' @param spec_path The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.
 #' @param .data A tibble or data.frame object that overrides the one specified in the spec file. Defaults to NULL.
@@ -13,42 +13,28 @@
 #' translate_data(my_spec)
 #' @export
 translate_data <- function(spec_path, .data = NULL) {
-  is.readable(spec_path)
+  spec <- get_spec(spec_path)
 
-  spec <- read_yaml(spec_path)
+  if (spec$type != "dataset") stop("Not a valid data set spec")
 
   if (is.null(.data)) {
-    df <- parse_expr(spec$df$source)
+    df <- parse_expr(spec$source)
     df <- eval(df)
-    if("function" %in% class(df)) return()
   } else {
     df <- .data
   }
 
-  if(is_tibble(df)){
-    was_tibble <- TRUE
-  } else {
-    was_tibble <- FALSE
-    df <-as_tibble(df)
-  }
+  was_tibble <- is_tibble(df)
+  df <- as_tibble(df)
 
   vars <- spec$variables
-  var_names <- names(vars)
-  vars_TRUE <- var_names == "TRUE"
-  if(sum(vars_TRUE) > 0){
-    if(vars[vars_TRUE][[1]]$trans == "TRUE"){
-      vars[vars_TRUE][[1]]$trans <- "y"
-    }
-    var_names[vars_TRUE]  <- "y"
-  }
-
-  new_names <- as.character(lapply(vars, function(x)x$trans))
 
   dfl <- lapply(
     seq_along(vars),
     function(x) {
-      cl <- df[, var_names[x]][[1]]
-      from <- names(vars[[x]]$values)
+      curr <- vars[[x]]
+      cl <- df[, curr$name][[1]]
+      from <- names(curr$values)
       to <- as.character(vars[[x]]$values[from])
       if (!is.null(from)) {
         if ("factor" %in% class(cl)) {
@@ -65,7 +51,7 @@ translate_data <- function(spec_path, .data = NULL) {
       }
 
       cl <- as.data.frame(cl)
-      colnames(cl) <- new_names[x]
+      colnames(cl) <- curr$trans
       cl
     }
   )
@@ -92,11 +78,9 @@ translate_data <- function(spec_path, .data = NULL) {
 #' save_translation(my_spec, tempdir())
 #' @export
 save_translation <- function(spec_path, data_folder = "data") {
-  is.readable(spec_path)
+  spec <- get_spec(spec_path = spec_path)
 
-  spec <- read_yaml(spec_path)
-
-  df_name <- spec$df$name
+  df_name <- spec$name
 
   df <- translate_data(spec_path)
 
@@ -126,17 +110,18 @@ save_translation <- function(spec_path, data_folder = "data") {
 #' load_translation(my_spec)
 #' @export
 load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
-  is.readable(spec_path)
-  spec <- read_yaml(spec_path)
-  df <- translate_data(spec_path)
+  spec <- get_spec(spec_path = spec_path)
+
+  df <- translate_data(spec_path = spec_path)
+
   assign(
-    x = spec$df$name,
+    x = spec$name,
     value = df,
     envir = envir
   )
 
   datalang_help_add(
-    obj = spec$df$name,
+    obj = spec$name,
     spec_path = spec_path,
     package = package
   )
@@ -153,7 +138,7 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' wish to execute the translation on the fly, preferably when the "host" package is attached.
 #'
 #' @param spec_folder The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.
-#' @param verbose Prints to the console the name of the original data set, and the name of the new translated data set.
+#' @param verbose If TRUE, it returns a list object with specs that where processed
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
 #' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
@@ -163,30 +148,33 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
-                             envir = baseenv(), package = NULL
-                             ) {
-  is.readable(spec_folder)
+                             envir = baseenv(), package = NULL) {
+  specs <- get_specs_folder(
+    spec_folder = spec_folder,
+    filter_type = "dataset"
+  )
 
-  specs <- file.path(spec_folder, list.files(spec_folder))
+  paths <- as.character(
+    lapply(
+      specs,
+      function(x) x$path
+    )
+  )
 
-  invisible({
-    lapply(specs, function(x) {
-      tr <- load_translation(x,
-                             envir = envir,
-                             package = package
-                             )
-      if (verbose) {
-        spec <- read_yaml(x)
-        if(is.null(tr)){
-          cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
-        } else {
-          cat("    ", spec$df$source, "\n")
-        }
-
+  invisible(
+    lapply(
+      paths,
+      function(x) {
+        load_translation(
+          spec_path = x,
+          envir = envir,
+          package = package
+        )
       }
-      tr
-    })
-  })
+    )
+  )
+
+  if (verbose) specs
 }
 
 #' Translates and loads multiple a data sets into an R environment
@@ -218,40 +206,71 @@ load_package_translations <- function(spec_folder = "translations",
                                       envir = baseenv(),
                                       language = NULL,
                                       package = NULL) {
-  is.readable(spec_folder)
-
   if (is.null(language)) language <- Sys.getenv("LANGUAGE")
 
   if (language != "") {
     lang_folder <- file.path(spec_folder, language)
     if (file.exists(lang_folder)) {
-
-      first_file <- list.files(lang_folder)[[1]]
-      first_file <- file.path(lang_folder, first_file)
-      first_file <- yaml::read_yaml(first_file)
-      first_file <- first_file$df$name
-
-
-      msgs <- get_messages(language)
-      cat(msgs$startup$detected, " \n")
-      cat(
-        " ",
-        msgs$startup$datasets,
-        ": \n"
-        )
-      load_folder_data(
-        lang_folder,
-        verbose = verbose,
-        envir = envir,
-        package = package
+      specs <- get_specs_folder(
+        spec_folder = lang_folder
       )
 
-      create_help_function(
-        name = msgs$help$name,
-        message = msgs$help$message,
-        usage = msgs$help$use,
-        example = first_file
+      max_source <- max(as.integer(lapply(specs, function(x) nchar(x$source))))
+      max_source <- max_source + 2
+
+      types <- as.character(lapply(specs, function(x) x$type))
+
+      msgs <- get_messages(language)
+      startup <- NULL
+      startup <- c(startup, paste0(msgs$startup$detected))
+      startup <- c(startup, paste0(msgs$startup$datasets, ":"))
+
+      if (any(types == "dataset")) {
+        load_folder_data(
+          lang_folder,
+          verbose = verbose,
+          envir = envir,
+          package = package
         )
+        items <- specs[types == "dataset"]
+        m <- as.character(
+          lapply(
+            items,
+            function(x) {
+              ifelse(x$source == x$name, x$name, paste0(pad_str(x$source, max_source, "-"), "> ", x$name))
+            }
+          )
+        )
+        startup <- c(startup, paste0(" ", msgs$startup$data))
+        startup <- c(startup, paste0("  ", m))
+      }
+
+      if (any(types == "function")) {
+        load_folder_functions(
+          lang_folder,
+          envir = envir,
+          verbose = verbose
+        )
+        items <- specs[types == "function"]
+        m <- as.character(
+          lapply(
+            items,
+            function(x) {
+              ifelse(x$source == x$name, x$name, paste0(pad_str(x$source, max_source, "-"), "> ", x$name))
+            }
+          )
+        )
+        startup <- c(startup, paste0(" ", msgs$startup$functions))
+        startup <- c(startup, paste0("  ", m))
+      }
+
+      create_help_function(name = msgs$help$name)
+      startup <- c(startup, paste0(msgs$help$message, ": ", msgs$help$name, "()"))
+      startup <- c(startup, paste0(msgs$help$use, ": ", msgs$help$name, "(", specs[[1]]$name, ")"))
+
+
+      startup <- paste0(startup, collapse = "\n")
+      if (verbose) cat(startup)
     }
   }
 }
@@ -262,10 +281,9 @@ on_attach <- function(package = NULL,
                       spec_folder = system.file("translations", package = package),
                       envir = as.environment(paste0("package:", package)),
                       language = NULL,
-                      verbose = TRUE
-                      ) {
+                      verbose = TRUE) {
   load_package_translations(
-    spec_folder =  spec_folder,
+    spec_folder = spec_folder,
     envir = envir,
     package = package,
     language = language
@@ -293,13 +311,24 @@ on_attach <- function(package = NULL,
 #' folder_data(my_spec_folder, tempdir())
 #' @export
 folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
-  is.readable(spec_folder)
-  specs <- list.files(spec_folder)
-  invisible({
-    lapply(file.path(spec_folder, specs), function(x) {
-      save_translation(x, data_folder = data_folder)
-    })
-  })
+  specs <- get_specs_folder(
+    spec_folder = spec_folder,
+    filter_type = "dataset"
+  )
+
+  paths <- as.character(
+    lapply(
+      specs,
+      function(x) x$path
+    )
+  )
+
+  lapply(
+    paths,
+    function(x) {
+      save_translation(spec_path = x, data_folder = data_folder)
+    }
+  )
 }
 
 #' Translates and saves multiple a data sets

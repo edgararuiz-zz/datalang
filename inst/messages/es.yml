@@ -1,6 +1,8 @@
 startup:
   detected: El lenguaje asignado actualmente es español
-  datasets: Cargando datos y/o ayuda de los siguientes objetos
+  datasets: Cargando las traducciones y ayuda de los siguientes objetos
+  data: Datos
+  functions: Funciones
 help:
   message: Una nueva función de ayuda fue cargada
   name: ayuda

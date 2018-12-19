@@ -29,8 +29,3 @@ The function translates and loads each new data set to a specified R environment
 This function is meant for packages that will do not wish to ship a copy of the data set, and
 wish to execute the translation on the fly, preferably when the "host" package is attached.
 }
-\examples{
-library(datalang)
-my_spec_folder <- system.file("translations", package = "datalang")
-load_package_translations(my_spec_folder, language = "es")
-}

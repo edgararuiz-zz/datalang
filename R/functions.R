@@ -11,10 +11,6 @@
 #' @param envir The target environment where the translated data set will be loaded to. Defaults to the base R environment.
 #' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
-#' @examples
-#' library(datalang)
-#' my_spec <- system.file("specs/group_by.yml", package = "datalang")
-#' load_function(my_spec)
 #' @export
 load_function <- function(spec_path, envir = baseenv(), package = NULL) {
   spec <- get_spec(spec_path = spec_path)

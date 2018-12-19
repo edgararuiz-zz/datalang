@@ -15,7 +15,7 @@
 translate_data <- function(spec_path, .data = NULL) {
   spec <- get_spec(spec_path)
 
-  if (spec$type != "dataset") stop("Not a valid data set spec")
+  if (spec$type != "data") stop("Not a valid data set spec")
 
   if (is.null(.data)) {
     df <- parse_expr(spec$source)
@@ -151,7 +151,7 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
                              envir = baseenv(), package = NULL) {
   specs <- get_specs_folder(
     spec_folder = spec_folder,
-    filter_type = "dataset"
+    filter_type = "data"
   )
 
   paths <- as.character(
@@ -196,10 +196,6 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
 #' @param language Optional argument that allows the target language to be specified.
 #' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
-#' @examples
-#' library(datalang)
-#' my_spec_folder <- system.file("translations", package = "datalang")
-#' load_package_translations(my_spec_folder, language = "es")
 #' @export
 load_package_translations <- function(spec_folder = "translations",
                                       verbose = TRUE,
@@ -225,14 +221,14 @@ load_package_translations <- function(spec_folder = "translations",
       startup <- c(startup, paste0(msgs$startup$detected))
       startup <- c(startup, paste0(msgs$startup$datasets, ":"))
 
-      if (any(types == "dataset")) {
+      if (any(types == "data")) {
         load_folder_data(
           lang_folder,
           verbose = verbose,
           envir = envir,
           package = package
         )
-        items <- specs[types == "dataset"]
+        items <- specs[types == "data"]
         m <- as.character(
           lapply(
             items,
@@ -313,7 +309,7 @@ on_attach <- function(package = NULL,
 folder_data <- function(spec_folder = "inst/specs", data_folder = "data") {
   specs <- get_specs_folder(
     spec_folder = spec_folder,
-    filter_type = "dataset"
+    filter_type = "data"
   )
 
   paths <- as.character(

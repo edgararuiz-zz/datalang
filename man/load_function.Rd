@@ -19,8 +19,3 @@ Translates and loads the translation to a specified R environment.
 This function is meant for packages that will do not wish to ship a copy of the data set, and
 wish to execute the translation on the fly, preferably when the "host" package is attached.
 }
-\examples{
-library(datalang)
-my_spec <- system.file("specs/group_by.yml", package = "datalang")
-load_function(my_spec)
-}

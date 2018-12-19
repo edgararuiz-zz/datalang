@@ -28,7 +28,7 @@ get_spec <- function(spec_path) {
     source = base$source,
     name = base$name,
     package = ifelse(is.null(base$package), "", base$package),
-    type = ifelse(is.null(base$type), "dataset", base$type),
+    type = ifelse(is.null(base$type), "data", base$type),
     path = spec_path,
     variables = variables,
     has_help = !is.null(yaml_file$help)
@@ -37,16 +37,6 @@ get_spec <- function(spec_path) {
   if (spec$has_help) spec$help <- yaml_file$help
 
   spec
-
-  # TODO- Fix y names
-  # vars_TRUE <- var_names == "TRUE"
-  # if(sum(vars_TRUE) > 0){
-  #   if(vars[vars_TRUE][[1]]$trans == "TRUE"){
-  #     vars[vars_TRUE][[1]]$trans <- "y"
-  #   }
-  #   var_names[vars_TRUE]  <- "y"
-  # }
-  #
 }
 
 get_specs_folder <- function(spec_folder, filter_type = "") {

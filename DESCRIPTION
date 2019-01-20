@@ -1,5 +1,5 @@
 Package: datalang
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Title: Translate data sets to other languages
 Description: Offers an easy way to translate the variable names and data inside data sets into another language.  The purpose it to make it easier for non-English speaking R users to take advantage of excercise data sets.
 Authors@R: 

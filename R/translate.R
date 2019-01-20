@@ -103,7 +103,8 @@ save_translation <- function(spec_path, data_folder = "data") {
   assign(df_name, df)
   save(
     list = df_name,
-    file = paste0(data_folder, "/", df_name, ".rda")
+    file = paste0(data_folder, "/", df_name, ".rda"),
+    compress = "xz"
   )
 }
 

@@ -28,17 +28,19 @@ create_html_help <- function(spec_path, package = NULL) {
   h <- c(h, paste0("<table>"))
   items <- NULL
   items <- lapply(
-    spec$variables, function(x) {
-      variable <- x["trans"]
+    seq_along(spec$variables),
+    function(x) {
+      variable <- spec$variables[[x]]["trans"]
+      description <- spec$variables[[x]]["desc"]
       if (variable == "TRUE") variable <- "y"
-      paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", x["desc"], "</td></tr>")
+      if (variable == "NULL") variable <- names(spec$variables[x])
+      paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", description, "</td></tr>")
     }
   )
   items <- as.character(items)
   h <- c(h, items)
   h <- c(h, paste0("</table>"))
   h <- c(h, paste0("</body>"))
-
 
   rd <- c(h)
   as.character(rd)
@@ -96,7 +98,7 @@ datalang_help <- function(topic) {
   found <- lapply(dh, function(x) x$object == expr_topic)
   found <- as.logical(found)
 
-  if (sum(found) > 0) {
+  if (any(found)) {
     dh_topic <- dh[found][[1]]
     ht <- create_html_help(dh_topic$spec_path, dh_topic$package)
     hs <- file.path(tempdir(), "help.html")

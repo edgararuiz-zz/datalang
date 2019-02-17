@@ -16,10 +16,7 @@ get_messages <- function(language = "es") {
   yaml::read_yaml(spec)
 }
 
-create_help_function <- function(name,
-                                 message = "New help function added:",
-                                 usage = "Usage:",
-                                 example = "mtcars") {
+create_help_function <- function(name) {
   f <- new_function(
     alist(... = ),
     quote(datalang::datalang_help(...))
@@ -27,7 +24,21 @@ create_help_function <- function(name,
   f <- list(f)
   names(f) <- name
   env_bind(base_env(), !!!f)
-  message <- paste0(message, ":")
-  cat("  ", message, paste0(name, "()"), "\n")
-  cat("    ", paste0(usage, ": ", name, "(", example, ")"), "\n")
+}
+
+pad_str <- function(x, len, fill = " ") {
+  pad <- len - nchar(x)
+  pad <- paste0(rep(fill, pad), collapse = "")
+  paste0(x, pad)
+}
+
+get_item <- function(list_object, item, type = c("character", "integer")) {
+  it <- lapply(
+    list_object,
+    function(x) x[[item]]
+  )
+  type <- type[1]
+  if (type == "character") it <- as.character(it)
+  if (type == "integer") it <- as.integer(it)
+  it
 }

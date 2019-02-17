@@ -20,29 +20,29 @@ translate_data <- function(spec_path, .data = NULL) {
   if (is.null(.data)) {
     df <- parse_expr(spec$df$source)
     df <- eval(df)
-    if("function" %in% class(df)) return()
+    if ("function" %in% class(df)) return()
   } else {
     df <- .data
   }
 
-  if(is_tibble(df)){
+  if (is_tibble(df)) {
     was_tibble <- TRUE
   } else {
     was_tibble <- FALSE
-    df <-as_tibble(df)
+    df <- as_tibble(df)
   }
 
   vars <- spec$variables
   var_names <- names(vars)
   vars_TRUE <- var_names == "TRUE"
-  if(sum(vars_TRUE) > 0){
-    if(vars[vars_TRUE][[1]]$trans == "TRUE"){
+  if (sum(vars_TRUE) > 0) {
+    if (vars[vars_TRUE][[1]]$trans == "TRUE") {
       vars[vars_TRUE][[1]]$trans <- "y"
     }
-    var_names[vars_TRUE]  <- "y"
+    var_names[vars_TRUE] <- "y"
   }
 
-  new_names <- as.character(lapply(vars, function(x)x$trans))
+  new_names <- as.character(lapply(vars, function(x) x$trans))
 
   dfl <- lapply(
     seq_along(vars),
@@ -164,8 +164,7 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
-                             envir = baseenv(), package = NULL
-                             ) {
+                             envir = baseenv(), package = NULL) {
   is.readable(spec_folder)
 
   specs <- file.path(spec_folder, list.files(spec_folder))
@@ -173,17 +172,16 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
   invisible({
     lapply(specs, function(x) {
       tr <- load_translation(x,
-                             envir = envir,
-                             package = package
-                             )
+        envir = envir,
+        package = package
+      )
       if (verbose) {
         spec <- read_yaml(x)
-        if(is.null(tr)){
+        if (is.null(tr)) {
           cat("    ", spec$df$source, " >-> ", spec$df$name, "\n")
         } else {
           cat("    ", spec$df$source, "\n")
         }
-
       }
       tr
     })
@@ -226,7 +224,6 @@ load_package_translations <- function(spec_folder = "translations",
   if (language != "") {
     lang_folder <- file.path(spec_folder, language)
     if (file.exists(lang_folder)) {
-
       first_file <- list.files(lang_folder)[[1]]
       first_file <- file.path(lang_folder, first_file)
       first_file <- yaml::read_yaml(first_file)
@@ -239,7 +236,7 @@ load_package_translations <- function(spec_folder = "translations",
         " ",
         msgs$startup$datasets,
         ": \n"
-        )
+      )
       load_folder_data(
         lang_folder,
         verbose = verbose,
@@ -252,7 +249,7 @@ load_package_translations <- function(spec_folder = "translations",
         message = msgs$help$message,
         usage = msgs$help$use,
         example = first_file
-        )
+      )
     }
   }
 }
@@ -263,10 +260,9 @@ on_attach <- function(package = NULL,
                       spec_folder = system.file("translations", package = package),
                       envir = as.environment(paste0("package:", package)),
                       language = NULL,
-                      verbose = TRUE
-                      ) {
+                      verbose = TRUE) {
   load_package_translations(
-    spec_folder =  spec_folder,
+    spec_folder = spec_folder,
     envir = envir,
     package = package,
     language = language

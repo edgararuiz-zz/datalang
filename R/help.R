@@ -13,23 +13,22 @@
 #' create_html_help(my_spec)
 #' @export
 create_html_help <- function(spec_path, package = NULL) {
-
   is.readable(spec_path)
 
   spec <- read_yaml(spec_path)
 
   help_name <- spec$help$name
-  if(!is.null(package)) help_name <- paste0(help_name, " {", package, "}")
+  if (!is.null(package)) help_name <- paste0(help_name, " {", package, "}")
 
   h <- paste0("<body style='font-family:arial;'>")
-  h <- c(h, paste0("<p>", help_name ,"</p>"))
-  h <- c(h, paste0("<h3>", spec$help$title ,"</h3>"))
-  h <- c(h, paste0("<p>", spec$help$description ,"</p>"))
+  h <- c(h, paste0("<p>", help_name, "</p>"))
+  h <- c(h, paste0("<h3>", spec$help$title, "</h3>"))
+  h <- c(h, paste0("<p>", spec$help$description, "</p>"))
 
   h <- c(h, paste0("<table>"))
   items <- NULL
   items <- lapply(
-    spec$variables, function(x){
+    spec$variables, function(x) {
       variable <- x["trans"]
       if (variable == "TRUE") variable <- "y"
       paste0("<tr><td>", variable, "</td><td></td></tr><tr><td></td><td>", x["desc"], "</td></tr>")
@@ -61,8 +60,7 @@ datalang_help_current <- function() datalang_context$help
 #' @param package Name of the "host" package. Optional.
 #'
 #' @export
-datalang_help_add <- function(obj, spec_path, package = NULL){
-
+datalang_help_add <- function(obj, spec_path, package = NULL) {
   is.readable(spec_path)
 
   old <- datalang_context$help
@@ -71,7 +69,7 @@ datalang_help_add <- function(obj, spec_path, package = NULL){
     spec_path = spec_path,
     package = package
   )
-  if(is.null(datalang_context$help)){
+  if (is.null(datalang_context$help)) {
     datalang_context$help <- list(item)
   } else {
     datalang_context$help <- c(datalang_context$help, list(item))
@@ -91,14 +89,14 @@ datalang_help_add <- function(obj, spec_path, package = NULL){
 #' @param topic A quoted or unquoted name of the data set or function
 #'
 #' @export
-datalang_help <- function(topic){
+datalang_help <- function(topic) {
   expr_topic <- enexpr(topic)
 
   dh <- datalang_help_current()
-  found <- lapply(dh, function(x)x$object == expr_topic)
+  found <- lapply(dh, function(x) x$object == expr_topic)
   found <- as.logical(found)
 
-  if(sum(found) > 0) {
+  if (sum(found) > 0) {
     dh_topic <- dh[found][[1]]
     ht <- create_html_help(dh_topic$spec_path, dh_topic$package)
     hs <- file.path(tempdir(), "help.html")
@@ -109,14 +107,10 @@ datalang_help <- function(topic){
     } else {
       browseURL(hs)
     }
-
   } else {
-    if(class(expr_topic) != "character"){
+    if (class(expr_topic) != "character") {
       expr_topic <- as.character(expr_topic)
     }
     utils::help(topic = expr_topic)
   }
 }
-
-
-

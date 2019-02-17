@@ -25,7 +25,7 @@ create_rd <- function(spec_path) {
 
   items <- NULL
   items <- lapply(
-    spec$variables, function(x){
+    spec$variables, function(x) {
       variable <- x["trans"]
       if (variable == "TRUE") variable <- "y"
       paste0("\\item{", variable, "}{", x["desc"], "}")
@@ -68,7 +68,6 @@ create_rd <- function(spec_path) {
 #' save_rd(my_spec, tempdir())
 #' @export
 save_rd <- function(spec_path = NULL, rd_folder = "man") {
-
   is.readable(spec_path)
   is.readable(rd_folder)
 
@@ -104,7 +103,6 @@ save_rd <- function(spec_path = NULL, rd_folder = "man") {
 #' folder_rd(my_spec_folder, tempdir())
 #' @export
 folder_rd <- function(spec_folder = "inst/specs", rd_folder = "man") {
-
   is.readable(spec_folder)
   is.readable(rd_folder)
 

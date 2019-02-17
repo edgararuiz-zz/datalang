@@ -70,6 +70,7 @@ translate_data <- function(spec_path, .data = NULL) {
     }
   )
   dfl <- as.data.frame(dfl)
+  colnames(dfl) <- new_names
   if (was_tibble) dfl <- as_tibble(dfl)
   dfl
 }

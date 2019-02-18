@@ -60,7 +60,7 @@ translate_data <- function(spec_path, .data = NULL) {
 
   colnames(dfl) <- sapply(
     seq_along(vars),
-    function(x) { vars[[x]]$name }
+    function(x) { vars[[x]]$trans }
   )
 
   if (was_tibble) dfl <- as_tibble(dfl)

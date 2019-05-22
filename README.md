@@ -80,7 +80,7 @@ The package also has a YAML spec file with the translation.
 my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 ```
 
-The `translate_data()` function can ready the YAML spec file found in
+The `translate_data()` function can read the YAML spec file found in
 the `my_spec` file path. It uses that spec to locate the data set, in
 this case `thisweek`, modifies a copy of the data set based on the spec,
 and outputs a new, translated, data set.

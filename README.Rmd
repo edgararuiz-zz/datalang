@@ -54,7 +54,7 @@ variables:
       saturday: sábado
       sunday: domingo
   morning:
-    trans: manana
+    trans: maniana
     desc: Temperatura a las 10 AM
   afternoon:
     trans: tarde

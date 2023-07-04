@@ -4,7 +4,9 @@
 \name{thisweek}
 \alias{thisweek}
 \title{Sample data set}
-\format{An object of class \code{data.frame} with 3 rows and 3 columns.}
+\format{
+An object of class \code{data.frame} with 3 rows and 3 columns.
+}
 \usage{
 thisweek
 }

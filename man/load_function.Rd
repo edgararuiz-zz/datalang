@@ -4,7 +4,7 @@
 \alias{load_function}
 \title{Translates and loads a function into an R environment}
 \usage{
-load_function(spec_path, envir = baseenv(), package = NULL)
+load_function(spec_path, envir = globalenv(), package = NULL)
 }
 \arguments{
 \item{spec_path}{The file location of the YAML spec translation file.  It is a required argument, cannot be left empty.}

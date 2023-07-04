@@ -55,8 +55,16 @@ translate_data <- function(spec_path, .data = NULL) {
       cl
     }
   )
+
   dfl <- as.data.frame(dfl)
+
+  colnames(dfl) <- sapply(
+    seq_along(vars),
+    function(x) { vars[[x]]$trans }
+  )
+
   if (was_tibble) dfl <- as_tibble(dfl)
+
   dfl
 }
 
@@ -87,7 +95,8 @@ save_translation <- function(spec_path, data_folder = "data") {
   assign(df_name, df)
   save(
     list = df_name,
-    file = paste0(data_folder, "/", df_name, ".rda")
+    file = paste0(data_folder, "/", df_name, ".rda"),
+    compress = "xz"
   )
 }
 
@@ -109,7 +118,7 @@ save_translation <- function(spec_path, data_folder = "data") {
 #' my_spec <- system.file("specs/thisweek.yml", package = "datalang")
 #' load_translation(my_spec)
 #' @export
-load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
+load_translation <- function(spec_path, envir = globalenv(), package = NULL) {
   spec <- get_spec(spec_path = spec_path)
 
   df <- translate_data(spec_path = spec_path)
@@ -148,7 +157,7 @@ load_translation <- function(spec_path, envir = baseenv(), package = NULL) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
-                             envir = baseenv(), package = NULL) {
+                             envir = globalenv(), package = NULL) {
   specs <- get_specs_folder(
     spec_folder = spec_folder,
     filter_type = "data"
@@ -199,7 +208,7 @@ load_folder_data <- function(spec_folder = "inst/specs", verbose = FALSE,
 #' @export
 load_package_translations <- function(spec_folder = "translations",
                                       verbose = TRUE,
-                                      envir = baseenv(),
+                                      envir = globalenv(),
                                       language = NULL,
                                       package = NULL) {
   if (is.null(language)) language <- Sys.getenv("LANGUAGE")

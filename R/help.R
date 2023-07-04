@@ -42,7 +42,6 @@ create_html_help <- function(spec_path, package = NULL) {
   h <- c(h, paste0("</table>"))
   h <- c(h, paste0("</body>"))
 
-
   rd <- c(h)
   as.character(rd)
 }
@@ -111,7 +110,7 @@ datalang_help <- function(topic) {
       browseURL(hs)
     }
   } else {
-    if (class(expr_topic) != "character") {
+    if (inherits(expr_topic) != "character") {
       expr_topic <- as.character(expr_topic)
     }
     utils::help(topic = expr_topic)

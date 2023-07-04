@@ -4,8 +4,13 @@
 \alias{load_package_translations}
 \title{Translates and loads multiple a data sets into an R environment}
 \usage{
-load_package_translations(spec_folder = "translations", verbose = TRUE,
-  envir = baseenv(), language = NULL, package = NULL)
+load_package_translations(
+  spec_folder = "translations",
+  verbose = TRUE,
+  envir = globalenv(),
+  language = NULL,
+  package = NULL
+)
 }
 \arguments{
 \item{spec_folder}{The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.}

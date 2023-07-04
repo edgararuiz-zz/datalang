@@ -4,8 +4,11 @@
 \alias{translate_folder}
 \title{Translates and saves multiple a data sets}
 \usage{
-translate_folder(spec_folder = "inst/specs", data_folder = "data",
-  rd_folder = "man")
+translate_folder(
+  spec_folder = "inst/specs",
+  data_folder = "data",
+  rd_folder = "man"
+)
 }
 \arguments{
 \item{spec_folder}{The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.}

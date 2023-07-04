@@ -4,8 +4,12 @@
 \alias{load_folder_functions}
 \title{Translates and loads multiple a funciton into an R environment}
 \usage{
-load_folder_functions(spec_folder = "inst/specs", verbose = FALSE,
-  envir = baseenv(), package = NULL)
+load_folder_functions(
+  spec_folder = "inst/specs",
+  verbose = FALSE,
+  envir = globalenv(),
+  package = NULL
+)
 }
 \arguments{
 \item{spec_folder}{The path to the folder where the YAML spec files are located. Defaults to 'inst/specs'.}

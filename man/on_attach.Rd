@@ -4,9 +4,13 @@
 \alias{on_attach}
 \title{Translates and loads multiple a data sets into an R environment}
 \usage{
-on_attach(package = NULL, spec_folder = system.file("translations",
-  package = package), envir = as.environment(paste0("package:",
-  package)), language = NULL, verbose = TRUE)
+on_attach(
+  package = NULL,
+  spec_folder = system.file("translations", package = package),
+  envir = as.environment(paste0("package:", package)),
+  language = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{package}{Name of the package as a character variable. It is used in the help tracker.}

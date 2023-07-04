@@ -110,7 +110,7 @@ datalang_help <- function(topic) {
       browseURL(hs)
     }
   } else {
-    if (class(expr_topic) != "character") {
+    if (inherits(expr_topic) != "character") {
       expr_topic <- as.character(expr_topic)
     }
     utils::help(topic = expr_topic)

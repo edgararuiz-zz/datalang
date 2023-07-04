@@ -14,7 +14,7 @@ Imports:
     yaml,
     rstudioapi
 ByteCompile: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3
 Suggests:
     testthat,
     covr

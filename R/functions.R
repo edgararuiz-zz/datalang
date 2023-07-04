@@ -12,7 +12,7 @@
 #' @param package Name of the package as a character variable. It is used in the help tracker.
 #'
 #' @export
-load_function <- function(spec_path, envir = baseenv(), package = NULL) {
+load_function <- function(spec_path, envir = globalenv(), package = NULL) {
   spec <- get_spec(spec_path = spec_path)
 
   if (spec$type != "function") stop("Not a valid function spec")
@@ -83,7 +83,7 @@ load_function <- function(spec_path, envir = baseenv(), package = NULL) {
 #' load_folder_data(my_spec_folder)
 #' @export
 load_folder_functions <- function(spec_folder = "inst/specs", verbose = FALSE,
-                                  envir = baseenv(), package = NULL) {
+                                  envir = globalenv(), package = NULL) {
   specs <- get_specs_folder(
     spec_folder = spec_folder,
     filter_type = "function"

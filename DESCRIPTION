@@ -1,12 +1,22 @@
 Package: datalang
-Version: 0.0.9000
+Version: 0.0.1
 Title: Translate package data sets to other languages
 Description: Offers an easy way to translate the variable names and data inside data sets into another language.  The purpose it to make it easier for non-English speaking R users to take advantage of excercise data sets.
 Authors@R:
-    person("Edgar", "Ruiz", , "edgararuiz@gmail.com", c("aut", "cre"))
-License: GPL-3
+    c(
+        person("Edgar", "Ruiz",
+            role = c("aut", "cre"),
+            email = "edgararuiz@gmail.com"),
+        person("Mauricio", "Vargas",
+            role = c("aut"), 
+            email = "m.sepulveda@mail.utoronto.ca", 
+            comment = c(ORCID = "0000-0003-1017-7574"))
+    )
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 4.1.0)
 Imports:
     rlang(>= 0.2.0),
     assertthat,

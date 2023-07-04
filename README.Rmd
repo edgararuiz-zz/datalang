@@ -153,6 +153,3 @@ library(gapminder)
 Because the help documentation is created on-the-fly, it cannot be added to the regular data file that functions such as `help()` use.  So a new help wrapper function is created that creates an HTML version of the data set, or function, help.  If the function, data set, or general topic is not one created by `datalang` then the requested topic is passed through to the `help()` function in the background.  
 
 The help's function name will be set based on the language.  So in Spanish, the name will be: `ayuda`.  
-
-
-
